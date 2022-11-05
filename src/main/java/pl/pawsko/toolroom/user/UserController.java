@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.pawsko.toolroom.category.CategoryDto;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @Tag(name = "Users")
@@ -22,7 +22,7 @@ public class UserController {
 
     @GetMapping
     @Operation(description = "Get all users", summary = "Get all users")
-    public Iterable<UserDto> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
 

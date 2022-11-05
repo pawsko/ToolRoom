@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @Tag(name = "Power Types")
@@ -20,7 +21,7 @@ public class PowerTypeController {
 
     @GetMapping
     @Operation(description = "Get all power types", summary = "Get all power types")
-    public Iterable<PowerTypeDto> getAll() {
+    public List<PowerTypeDto> getAll() {
         return powerTypeService.getAll();
     }
 

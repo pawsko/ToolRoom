@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @Tag(name = "Manufacturers")
@@ -20,7 +21,7 @@ public class ManufacturerController {
 
     @GetMapping
     @Operation(description = "Get all manufacturers", summary = "Get all manufacturers")
-    public Iterable<ManufacturerDto> getAll() {
+    public List<ManufacturerDto> getAll() {
         return manufacturerService.getAllManufactures();
     }
 

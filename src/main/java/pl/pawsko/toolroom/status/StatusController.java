@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @Tag(name = "Statuses")
@@ -20,7 +21,7 @@ public class StatusController {
 
     @GetMapping
     @Operation(description = "Get all statuses", summary = "Get all statuses")
-    Iterable<StatusDto> getAll() {
+    List<StatusDto> getAll() {
         return statusService.getAllStatuses();
     }
 

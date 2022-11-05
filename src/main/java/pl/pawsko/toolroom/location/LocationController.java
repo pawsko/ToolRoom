@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @Tag(name = "Locations")
@@ -20,7 +21,7 @@ public class LocationController {
 
     @GetMapping
     @Operation(description = "Get all locations", summary = "Get all locations")
-    public Iterable<LocationDto> getAll() {
+    public List<LocationDto> getAll() {
         return locationService.getAllLocations();
     }
 
