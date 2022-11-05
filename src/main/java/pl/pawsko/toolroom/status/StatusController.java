@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/status")
@@ -16,7 +17,7 @@ public class StatusController {
     }
 
     @GetMapping
-    Iterable<StatusDto> getAll() {
+    List<StatusDto> getAll() {
         return statusService.getAllStatuses();
     }
 

@@ -6,6 +6,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 import java.net.URI;
+import java.util.List;
 
 
 @RestController
@@ -19,7 +20,7 @@ public class ToolController {
 
 
     @GetMapping
-    public Iterable<ToolDto> getAllTools() {
+    public List<ToolDto> getAllTools() {
         return toolService.getAllTools();
     }
 

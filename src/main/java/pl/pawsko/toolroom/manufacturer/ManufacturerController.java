@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/manufacturer")
@@ -16,7 +17,7 @@ public class ManufacturerController {
     }
 
     @GetMapping
-    public Iterable<ManufacturerDto> getAll() {
+    public List<ManufacturerDto> getAll() {
         return manufacturerService.getAllManufactures();
     }
 

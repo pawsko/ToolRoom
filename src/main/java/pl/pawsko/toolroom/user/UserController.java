@@ -3,9 +3,9 @@ package pl.pawsko.toolroom.user;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.pawsko.toolroom.category.CategoryDto;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -18,7 +18,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Iterable<UserDto> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
 

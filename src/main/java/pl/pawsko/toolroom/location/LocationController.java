@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/location")
@@ -16,7 +17,7 @@ public class LocationController {
     }
 
     @GetMapping
-    public Iterable<LocationDto> getAll() {
+    public List<LocationDto> getAll() {
         return locationService.getAllLocations();
     }
 
