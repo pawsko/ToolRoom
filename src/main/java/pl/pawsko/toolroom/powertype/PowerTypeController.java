@@ -26,7 +26,7 @@ public class PowerTypeController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific power type byID",summary = "Get specific power type byID")
+    @Operation(description = "Get specific power type by id",summary = "Get specific power type by id")
     public ResponseEntity<PowerTypeDto> getById(@PathVariable Long id) {
         return powerTypeService.findById(id)
                 .map(ResponseEntity::ok)
@@ -45,7 +45,7 @@ public class PowerTypeController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific power type byID", summary = "Edit specific power type byID")
+    @Operation(description = "Edit specific power type by id", summary = "Edit specific power type by id")
     ResponseEntity<?> replace(@PathVariable Long id, @RequestBody PowerTypeDto powerTypeDto) {
         return powerTypeService.replacePowerType(id, powerTypeDto)
                 .map(c -> ResponseEntity.noContent().build())

@@ -26,7 +26,7 @@ public class StatusController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific status byID", summary = "Get specific status byID")
+    @Operation(description = "Get specific status by id", summary = "Get specific status by id")
     ResponseEntity<StatusDto> getById(@PathVariable Long id) {
         return statusService.getStatusById(id)
                 .map(ResponseEntity::ok)
@@ -45,7 +45,7 @@ public class StatusController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific status byID", summary = "Edit specific status byID")
+    @Operation(description = "Edit specific status by id", summary = "Edit specific status by id")
     ResponseEntity<?> replace(@PathVariable Long id, @RequestBody StatusDto statusDto) {
         return statusService.replaceStatus(id, statusDto)
                 .map(c -> ResponseEntity.noContent().build())

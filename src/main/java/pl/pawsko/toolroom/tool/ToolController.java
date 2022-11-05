@@ -29,7 +29,7 @@ public class ToolController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific tool byID",summary = "Get specific tool byID")
+    @Operation(description = "Get specific tool by id",summary = "Get specific tool by id")
     public ResponseEntity<ToolDto> getToolById(@PathVariable Long id) {
         return toolService.getToolById(id)
                 .map(ResponseEntity::ok)
@@ -48,7 +48,7 @@ public class ToolController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific tool byID", summary = "Edit specific tool byID")
+    @Operation(description = "Edit specific tool by id", summary = "Edit specific tool by id")
     ResponseEntity<?> replaceTool(@PathVariable Long id, @RequestBody ToolDto toolDto) {
         return toolService.replaceTool(id, toolDto)
                 .map(c -> ResponseEntity.noContent().build())

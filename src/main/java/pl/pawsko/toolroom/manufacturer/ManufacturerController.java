@@ -26,7 +26,7 @@ public class ManufacturerController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific manufacturer byID",summary = "Get specific manufacturer byID")
+    @Operation(description = "Get specific manufacturer by id",summary = "Get specific manufacturer by id")
     public ResponseEntity<ManufacturerDto> getById(@PathVariable Long id) {
         return manufacturerService.findManufacturerById(id)
                 .map(ResponseEntity::ok)
@@ -45,7 +45,7 @@ public class ManufacturerController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific manufacturer byID", summary = "Edit specific manufacturer byID")
+    @Operation(description = "Edit specific manufacturer by id", summary = "Edit specific manufacturer by id")
     ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody ManufacturerDto manufacturerDto) {
         return manufacturerService.replaceManufacturer(id, manufacturerDto)
                 .map(c -> ResponseEntity.noContent().build())

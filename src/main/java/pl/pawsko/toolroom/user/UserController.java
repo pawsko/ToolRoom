@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific user byID", summary = "Get specific user byID")
+    @Operation(description = "Get specific user by id", summary = "Get specific user by id")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific user byID", summary = "Edit specific user byID")
+    @Operation(description = "Edit specific user by id", summary = "Edit specific user by id")
     ResponseEntity<?> replaceUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         return userService.replaceUser(id, userDto)
                 .map(c -> ResponseEntity.noContent().build())

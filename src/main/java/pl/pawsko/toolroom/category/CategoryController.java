@@ -26,7 +26,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific category byID",summary = "Get specific category byID")
+    @Operation(description = "Get specific category by id",summary = "Get specific category by id")
     ResponseEntity<CategoryDto> getById(@PathVariable Long id) {
         return categoryService.getCategoryById(id)
                 .map(ResponseEntity::ok)
@@ -45,7 +45,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific category byID", summary = "Edit specific category byID")
+    @Operation(description = "Edit specific category by id", summary = "Edit specific category by id")
     ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
         return categoryService.replaceCategory(id, categoryDto)
                 .map(c -> ResponseEntity.noContent().build())

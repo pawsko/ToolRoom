@@ -28,7 +28,7 @@ public class RentalController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific rental byID",summary = "Get specific rental byID")
+    @Operation(description = "Get specific rental by id",summary = "Get specific rental by id")
     ResponseEntity<RentalDto> getRentalById(@PathVariable Long id) {
         return rentalService.getRentalById(id)
                 .map(ResponseEntity::ok)
@@ -47,7 +47,7 @@ public class RentalController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific rental byID", summary = "Edit specific rental byID")
+    @Operation(description = "Edit specific rental by id", summary = "Edit specific rental by id")
     ResponseEntity<?> replaceRental(@PathVariable Long id, @RequestBody RentalDto rentalDto) {
         return rentalService.replaceRental(id, rentalDto)
                 .map(r -> ResponseEntity.noContent().build())
