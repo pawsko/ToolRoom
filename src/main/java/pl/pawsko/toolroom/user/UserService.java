@@ -41,7 +41,7 @@ public class UserService {
         if (!userRepository.existsById(id)) {
             return Optional.empty();
         } else {
-            Optional<User> userRepositoryById = userRepository.findById(id);
+             Optional<User> userRepositoryById = userRepository.findById(id);
             userDto.setId(id);
             User userToUpdate = userDtoMapper.map(userDto);
             userToUpdate.setCreated(userRepositoryById.orElseThrow().getCreated());

@@ -1,5 +1,7 @@
 package pl.pawsko.toolroom.category;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -8,6 +10,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@Tag(name = "Categories")
 @RequestMapping("api/category")
 public class CategoryController {
     private final CategoryService categoryService;
@@ -17,11 +20,13 @@ public class CategoryController {
     }
 
     @GetMapping
+    @Operation(description = "Get all categories", summary = "Get all categories")
     List<CategoryDto> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")
+    @Operation(description = "Get specific category byID",summary = "Get specific category byID")
     ResponseEntity<CategoryDto> getById(@PathVariable Long id) {
         return categoryService.getCategoryById(id)
                 .map(ResponseEntity::ok)
@@ -29,6 +34,7 @@ public class CategoryController {
     }
 
     @PostMapping
+    @Operation(description = "Add new category", summary = "Add new category")
     ResponseEntity<CategoryDto> saveCategory(@RequestBody CategoryDto categoryDto) {
         CategoryDto savedCategory = categoryService.saveCategory(categoryDto);
         URI savedCategoryUri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -39,6 +45,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @Operation(description = "Edit specific category byID", summary = "Edit specific category byID")
     ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
         return categoryService.replaceCategory(id, categoryDto)
                 .map(c -> ResponseEntity.noContent().build())

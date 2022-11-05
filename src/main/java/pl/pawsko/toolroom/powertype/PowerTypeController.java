@@ -1,5 +1,7 @@
 package pl.pawsko.toolroom.powertype;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -7,6 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
+@Tag(name = "Power Types")
 @RequestMapping("/api/powertype")
 public class PowerTypeController {
     private final PowerTypeService powerTypeService;
@@ -16,11 +19,13 @@ public class PowerTypeController {
     }
 
     @GetMapping
+    @Operation(description = "Get all power types", summary = "Get all power types")
     public Iterable<PowerTypeDto> getAll() {
         return powerTypeService.getAll();
     }
 
     @GetMapping("/{id}")
+    @Operation(description = "Get specific power type byID",summary = "Get specific power type byID")
     public ResponseEntity<PowerTypeDto> getById(@PathVariable Long id) {
         return powerTypeService.findById(id)
                 .map(ResponseEntity::ok)
@@ -28,6 +33,7 @@ public class PowerTypeController {
     }
 
     @PostMapping
+    @Operation(description = "Add new power type", summary = "Add new power type")
     ResponseEntity<PowerTypeDto> save(@RequestBody PowerTypeDto powerTypeDto) {
         PowerTypeDto savedPowerType = powerTypeService.savePowerType(powerTypeDto);
         URI savedLocationUri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -38,6 +44,7 @@ public class PowerTypeController {
     }
 
     @PutMapping("/{id}")
+    @Operation(description = "Edit specific power type byID", summary = "Edit specific power type byID")
     ResponseEntity<?> replace(@PathVariable Long id, @RequestBody PowerTypeDto powerTypeDto) {
         return powerTypeService.replacePowerType(id, powerTypeDto)
                 .map(c -> ResponseEntity.noContent().build())
