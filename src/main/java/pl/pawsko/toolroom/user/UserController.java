@@ -1,6 +1,11 @@
 package pl.pawsko.toolroom.user;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +27,21 @@ public class UserController {
 
     @GetMapping
     @Operation(description = "Get all users", summary = "Get all users")
-    public List<UserDto> getAllUsers() {
+    @ApiResponse(responseCode = "200", description = "List of all users", content = {@Content(mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = UserDtoResponse.class)))})
+    public List<UserDtoResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
     @Operation(description = "Get specific user by id", summary = "Get specific user by id")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "User at provided id was found",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDtoResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "The user with the given ID was not found", content = @Content)})
+    public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -36,8 +49,12 @@ public class UserController {
 
     @PostMapping
     @Operation(description = "Add user", summary = "Add user")
-    ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
-        UserDto savedUser = userService.saveUser(userDto);
+    @ApiResponse(responseCode = "201",
+            description = "New user has added",
+            content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = UserDtoRequest.class))})
+    ResponseEntity<UserDtoResponse> saveUser(@RequestBody UserDtoRequest userDtoRequest) {
+        UserDtoResponse savedUser = userService.saveUser(userDtoRequest);
         URI savedUserUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
@@ -47,8 +64,13 @@ public class UserController {
 
     @PutMapping("/{id}")
     @Operation(description = "Edit specific user by id", summary = "Edit specific user by id")
-    ResponseEntity<?> replaceUser(@PathVariable Long id, @RequestBody UserDto userDto) {
-        return userService.replaceUser(id, userDto)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User successfully updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "The user with the given ID was not found",
+                    content = @Content)})
+    ResponseEntity<?> replaceUser(@PathVariable Long id, @RequestBody UserDtoRequest userDtoRequest) {
+        return userService.replaceUser(id, userDtoRequest)
                 .map(c -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -4,17 +4,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryDtoMapper {
-    CategoryDto map(Category category) {
-        CategoryDto dto = new CategoryDto();
+    CategoryDtoResponse map(Category category) {
+        CategoryDtoResponse dto = new CategoryDtoResponse();
         dto.setId(category.getId());
         dto.setCategoryName(category.getCategoryName());
-    return dto;
+        return dto;
     }
 
-    Category map(CategoryDto categoryDto) {
+    Category map(CategoryDtoRequest categoryDtoRequest) {
         Category category = new Category();
-        category.setId(categoryDto.getId());
-        category.setCategoryName(categoryDto.getCategoryName());
+        category.setCategoryName(categoryDtoRequest.getCategoryName());
         return category;
     }
 }

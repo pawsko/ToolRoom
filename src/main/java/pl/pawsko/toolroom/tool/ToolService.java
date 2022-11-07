@@ -18,30 +18,30 @@ public class ToolService {
     }
 
 
-    public List<ToolDto> getAllTools() {
+    public List<ToolDtoResponse> getAllTools() {
         return StreamSupport.stream(toolRepository.findAll().spliterator(), false)
                 .map(toolDtoMapper::map)
                 .collect(Collectors.toList());
     }
 
-    public Optional<ToolDto> getToolById(Long id) {
+    public Optional<ToolDtoResponse> getToolById(Long id) {
         return toolRepository.findById(id)
                 .map(toolDtoMapper::map);
     }
 
-    public ToolDto saveTool(ToolDto toolDto) {
-        Tool tool = toolDtoMapper.map(toolDto);
+    public ToolDtoResponse saveTool(ToolDtoRequest toolDtoRequest) {
+        Tool tool = toolDtoMapper.map(toolDtoRequest);
         Tool savedTool = toolRepository.save(tool);
         return toolDtoMapper.map(savedTool);
     }
 
-    public Optional<ToolDto> replaceTool(Long id, ToolDto toolDto) {
+    public Optional<ToolDtoResponse> replaceTool(Long id, ToolDtoRequest toolDtoRequest) {
         if (!toolRepository.existsById(id)) {
             return Optional.empty();
         } else {
             Optional<Tool> byId = toolRepository.findById(id);
-            toolDto.setId(id);
-            Tool toolToUpdate = toolDtoMapper.map(toolDto);
+            Tool toolToUpdate = toolDtoMapper.map(toolDtoRequest);
+            toolToUpdate.setId(id);
             toolToUpdate.setCreated(byId.orElseThrow().getCreated());
             Tool updatedEntity = toolRepository.save(toolToUpdate);
             return Optional.of(toolDtoMapper.map(updatedEntity));

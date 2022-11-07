@@ -27,8 +27,8 @@ public class LocationController {
     @GetMapping
     @Operation(description = "Get all locations", summary = "Get all locations")
     @ApiResponse(responseCode = "200", description = "List of all locations", content = {@Content(mediaType = "application/json",
-            array = @ArraySchema(schema = @Schema(implementation = LocationDto.class)))})
-    public List<LocationDto> getAll() {
+            array = @ArraySchema(schema = @Schema(implementation = LocationDtoResponse.class)))})
+    public List<LocationDtoResponse> getAllLocations() {
         return locationService.getAllLocations();
     }
 
@@ -38,9 +38,9 @@ public class LocationController {
             @ApiResponse(responseCode = "200",
                     description = "Location at provided id was found",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = LocationDto.class))}),
+                            schema = @Schema(implementation = LocationDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "The location with the given ID was not found", content = @Content)})
-    public ResponseEntity<LocationDto> getById(@PathVariable Long id) {
+    public ResponseEntity<LocationDtoResponse> getLocationById(@PathVariable Long id) {
         return locationService.getLocationById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -51,9 +51,9 @@ public class LocationController {
     @ApiResponse(responseCode = "201",
             description = "New location has added",
             content = {@Content(mediaType = "application/json",
-                    schema = @Schema(implementation = LocationDto.class))})
-    ResponseEntity<LocationDto> saveCategory(@RequestBody LocationDto locationDto) {
-        LocationDto savedLocation = locationService.saveLocation(locationDto);
+                    schema = @Schema(implementation = LocationDtoRequest.class))})
+    ResponseEntity<LocationDtoResponse> saveCategory(@RequestBody LocationDtoRequest locationDtoRequest) {
+        LocationDtoResponse savedLocation = locationService.saveLocation(locationDtoRequest);
         URI savedLocationUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedLocation.getId())
@@ -64,12 +64,12 @@ public class LocationController {
     @PutMapping("/{id}")
     @Operation(description = "Updates the location with the given id", summary = "Updates the location with the given id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "No Content",
+            @ApiResponse(responseCode = "204", description = "Location successfully updated",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "The location with the given ID was not found",
                     content = @Content)})
-    ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody LocationDto locationDto) {
-        return locationService.replaceLocation(id, locationDto)
+    ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody LocationDtoRequest locationDtoRequest) {
+        return locationService.replaceLocation(id, locationDtoRequest)
                 .map(l -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -1,6 +1,11 @@
 package pl.pawsko.toolroom.powertype;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +26,21 @@ public class PowerTypeController {
 
     @GetMapping
     @Operation(description = "Get all power types", summary = "Get all power types")
-    public List<PowerTypeDto> getAll() {
+    @ApiResponse(responseCode = "200", description = "List of all power types", content = {@Content(mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = PowerTypeDtoResponse.class)))})
+    public List<PowerTypeDtoResponse> getAll() {
         return powerTypeService.getAll();
     }
 
     @GetMapping("/{id}")
     @Operation(description = "Get specific power type by id",summary = "Get specific power type by id")
-    public ResponseEntity<PowerTypeDto> getById(@PathVariable Long id) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Power type at provided id was found",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PowerTypeDtoResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "The power type with the given ID was not found", content = @Content)})
+    public ResponseEntity<PowerTypeDtoResponse> getById(@PathVariable Long id) {
         return powerTypeService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -35,19 +48,28 @@ public class PowerTypeController {
 
     @PostMapping
     @Operation(description = "Add new power type", summary = "Add new power type")
-    ResponseEntity<PowerTypeDto> save(@RequestBody PowerTypeDto powerTypeDto) {
-        PowerTypeDto savedPowerType = powerTypeService.savePowerType(powerTypeDto);
-        URI savedLocationUri = ServletUriComponentsBuilder.fromCurrentRequest()
+    @ApiResponse(responseCode = "201",
+            description = "New power type has added",
+            content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PowerTypeDtoRequest.class))})
+    ResponseEntity<PowerTypeDtoResponse> save(@RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
+        PowerTypeDtoResponse savedPowerType = powerTypeService.savePowerType(powerTypeDtoRequest);
+        URI savedPowerTypeUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedPowerType.getId())
                 .toUri();
-        return ResponseEntity.created(savedLocationUri).body(savedPowerType);
+        return ResponseEntity.created(savedPowerTypeUri).body(savedPowerType);
     }
 
     @PutMapping("/{id}")
     @Operation(description = "Edit specific power type by id", summary = "Edit specific power type by id")
-    ResponseEntity<?> replace(@PathVariable Long id, @RequestBody PowerTypeDto powerTypeDto) {
-        return powerTypeService.replacePowerType(id, powerTypeDto)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Power type successfully updated",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "The power type with the given ID was not found",
+                    content = @Content)})
+    ResponseEntity<?> replace(@PathVariable Long id, @RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
+        return powerTypeService.replacePowerType(id, powerTypeDtoRequest)
                 .map(c -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }

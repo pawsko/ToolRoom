@@ -4,17 +4,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class StatusDtoMapper {
-    StatusDto map(Status status) {
-        StatusDto dto = new StatusDto();
+    StatusDtoResponse map(Status status) {
+        StatusDtoResponse dto = new StatusDtoResponse();
         dto.setId(status.getId());
         dto.setStatusName(status.getStatusName());
         return dto;
     }
 
-    Status map(StatusDto statusDto) {
+    Status map(StatusDtoRequest statusDtoRequest) {
         Status status = new Status();
-        status.setId(statusDto.getId());
-        status.setStatusName(statusDto.getStatusName());
+        status.setStatusName(statusDtoRequest.getStatusName());
         return status;
     }
 }

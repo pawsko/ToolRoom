@@ -1,8 +1,6 @@
 package pl.pawsko.toolroom.user;
 
 import org.springframework.stereotype.Service;
-import pl.pawsko.toolroom.category.Category;
-import pl.pawsko.toolroom.category.CategoryDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,32 +18,31 @@ public class UserService {
         this.userDtoMapper = userDtoMapper;
     }
 
-    public List<UserDto> getAllUsers() {
+    public List<UserDtoResponse> getAllUsers() {
     return StreamSupport.stream(userRepository.findAll().spliterator(), false)
             .map(userDtoMapper::map)
             .collect(Collectors.toList());
     }
 
-    public Optional<UserDto> getUserById(Long id) {
+    public Optional<UserDtoResponse> getUserById(Long id) {
         return userRepository.findById(id)
                 .map(userDtoMapper::map);
     }
 
-    public UserDto saveUser(UserDto userDto) {
-        User user = userDtoMapper.map(userDto);
+    public UserDtoResponse saveUser(UserDtoRequest userDtoRequest) {
+        User user = userDtoMapper.map(userDtoRequest);
         User savedUser = userRepository.save(user);
         return userDtoMapper.map(savedUser);
     }
 
-    public Optional<UserDto> replaceUser(Long id, UserDto userDto) {
+    public Optional<UserDtoResponse> replaceUser(Long id, UserDtoRequest userDtoRequest) {
         if (!userRepository.existsById(id)) {
             return Optional.empty();
         } else {
              Optional<User> userRepositoryById = userRepository.findById(id);
-            userDto.setId(id);
-            User userToUpdate = userDtoMapper.map(userDto);
+            User userToUpdate = userDtoMapper.map(userDtoRequest);
+            userToUpdate.setId(id);
             userToUpdate.setCreated(userRepositoryById.orElseThrow().getCreated());
-            userToUpdate.setRating(userDto.getRating());
             User updatedEntity = userRepository.save(userToUpdate);
             return Optional.of(userDtoMapper.map(updatedEntity));
         }
