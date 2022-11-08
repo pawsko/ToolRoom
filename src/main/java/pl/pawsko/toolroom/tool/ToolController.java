@@ -35,7 +35,7 @@ public class ToolController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific tool by id",summary = "Get specific tool by id")
+    @Operation(description = "Get specific tool by id", summary = "Get specific tool by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Tool at provided id was found",
@@ -50,17 +50,25 @@ public class ToolController {
 
     @PostMapping
     @Operation(description = "Add new tool", summary = "Add new tool")
-    @ApiResponse(responseCode = "201",
-            description = "New tool has added",
-            content = {@Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ToolDtoRequest.class))})
-            ResponseEntity<ToolDtoResponse> saveTool(@RequestBody ToolDtoRequest toolDtoRequest) {
-        ToolDtoResponse savedTool = toolService.saveTool(toolDtoRequest);
-        URI savedToolUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedTool.getId())
-                .toUri();
-        return ResponseEntity.created(savedToolUri).body(savedTool);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "New tool has added",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ToolDtoRequest.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "New tool didn't create because of errors")
+    })
+    ResponseEntity<?> saveTool(@RequestBody ToolDtoRequest toolDtoRequest) {
+        try {
+            ToolDtoResponse savedTool = toolService.saveTool(toolDtoRequest);
+            URI savedToolUri = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(savedTool.getId())
+                    .toUri();
+            return ResponseEntity.created(savedToolUri).body(savedTool);
+        } catch (IllegalArgumentException iae) {
+            return ResponseEntity.badRequest().body(iae.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
