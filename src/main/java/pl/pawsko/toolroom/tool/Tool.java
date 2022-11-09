@@ -2,7 +2,6 @@ package pl.pawsko.toolroom.tool;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import pl.pawsko.toolroom.category.Category;
 import pl.pawsko.toolroom.location.Location;
 import pl.pawsko.toolroom.manufacturer.Manufacturer;
@@ -26,12 +25,12 @@ public class Tool {
     @ManyToOne
     private Manufacturer manufacturer;
     @ManyToOne
-    private Category category;    //Hand tools, Power tools, Petrol tools, Measuring tools
+    private Category category;
     @ManyToOne
-    private PowerType powerType; //if applicable 230, battery, gasoline for 4T, gasoline + oilmix for 2T handy
+    private PowerType powerType;
     @ManyToOne
-    private Status status; //Available, not available, damaged, in service, out of ofrder
-    private int rating; //included accuracy, rate of wear and tear
+    private Status status;
+    private int rating;
     @ManyToOne
     private Location location;
     @ManyToOne

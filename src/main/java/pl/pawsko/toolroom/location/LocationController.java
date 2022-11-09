@@ -7,12 +7,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "Locations")
@@ -52,7 +58,8 @@ public class LocationController {
             description = "New location has added",
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = LocationDtoRequest.class))})
-    ResponseEntity<LocationDtoResponse> saveCategory(@RequestBody LocationDtoRequest locationDtoRequest) {
+    @ResponseStatus(HttpStatus.CREATED)
+    ResponseEntity<LocationDtoResponse> saveCategory(@Valid @RequestBody LocationDtoRequest locationDtoRequest) {
         LocationDtoResponse savedLocation = locationService.saveLocation(locationDtoRequest);
         URI savedLocationUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -60,7 +67,13 @@ public class LocationController {
                 .toUri();
         return ResponseEntity.created(savedLocationUri).body(savedLocation);
     }
-
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+    }
     @PutMapping("/{id}")
     @Operation(description = "Updates the location with the given id", summary = "Updates the location with the given id")
     @ApiResponses(value = {
@@ -68,7 +81,7 @@ public class LocationController {
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "The location with the given ID was not found",
                     content = @Content)})
-    ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody LocationDtoRequest locationDtoRequest) {
+    ResponseEntity<?> replaceCategory(@PathVariable Long id, @Valid @RequestBody LocationDtoRequest locationDtoRequest) {
         return locationService.replaceLocation(id, locationDtoRequest)
                 .map(l -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());

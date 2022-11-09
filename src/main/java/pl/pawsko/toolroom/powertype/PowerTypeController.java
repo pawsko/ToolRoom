@@ -7,12 +7,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "Power Types")
@@ -52,7 +58,9 @@ public class PowerTypeController {
             description = "New power type has added",
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = PowerTypeDtoRequest.class))})
-    ResponseEntity<PowerTypeDtoResponse> save(@RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
+
+    @ResponseStatus(HttpStatus.CREATED)
+    ResponseEntity<PowerTypeDtoResponse> save(@Valid @RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
         PowerTypeDtoResponse savedPowerType = powerTypeService.savePowerType(powerTypeDtoRequest);
         URI savedPowerTypeUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -60,7 +68,13 @@ public class PowerTypeController {
                 .toUri();
         return ResponseEntity.created(savedPowerTypeUri).body(savedPowerType);
     }
-
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+    }
     @PutMapping("/{id}")
     @Operation(description = "Edit specific power type by id", summary = "Edit specific power type by id")
     @ApiResponses(value = {
@@ -68,7 +82,7 @@ public class PowerTypeController {
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "The power type with the given ID was not found",
                     content = @Content)})
-    ResponseEntity<?> replace(@PathVariable Long id, @RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
+    ResponseEntity<?> replace(@PathVariable Long id, @Valid @RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
         return powerTypeService.replacePowerType(id, powerTypeDtoRequest)
                 .map(c -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());

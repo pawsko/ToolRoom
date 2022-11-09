@@ -8,12 +8,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -54,13 +60,22 @@ public class RentalController {
             description = "New rental has added",
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = RentalDtoRequest.class))})
-    ResponseEntity<RentalDtoResponse> saveRental(@RequestBody RentalDtoRequest rentalDtoRequest) {
+
+    @ResponseStatus(HttpStatus.CREATED)
+    ResponseEntity<RentalDtoResponse> saveRental(@Valid @RequestBody RentalDtoRequest rentalDtoRequest) {
         RentalDtoResponse savedRental = rentalService.saveRental(rentalDtoRequest);
         URI savedRentalUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("{id}")
                 .buildAndExpand(savedRental.getId())
                 .toUri();
         return ResponseEntity.created(savedRentalUri).body(savedRental);
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 
     @PutMapping("/{id}")
@@ -70,7 +85,7 @@ public class RentalController {
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "The rental with the given ID was not found",
                     content = @Content)})
-    ResponseEntity<?> replaceRental(@PathVariable Long id, @RequestBody RentalDtoRequest rentalDtoRequest) {
+    ResponseEntity<?> replaceRental(@PathVariable Long id, @Valid @RequestBody RentalDtoRequest rentalDtoRequest) {
         return rentalService.replaceRental(id, rentalDtoRequest)
                 .map(r -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());

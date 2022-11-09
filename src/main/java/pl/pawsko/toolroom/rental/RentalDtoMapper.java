@@ -2,10 +2,23 @@ package pl.pawsko.toolroom.rental;
 
 import org.springframework.stereotype.Service;
 import pl.pawsko.toolroom.tool.Tool;
+import pl.pawsko.toolroom.tool.ToolRepository;
 import pl.pawsko.toolroom.user.User;
+import pl.pawsko.toolroom.user.UserRepository;
+
+import java.util.Optional;
 
 @Service
 public class RentalDtoMapper {
+
+    public final UserRepository userRepository;
+    public final ToolRepository toolRepository;
+
+    public RentalDtoMapper(UserRepository userRepository, ToolRepository toolRepository) {
+        this.userRepository = userRepository;
+        this.toolRepository = toolRepository;
+    }
+
     RentalDtoResponse map(Rental rental) {
         RentalDtoResponse dto = new RentalDtoResponse();
         dto.setId(rental.getId());
@@ -22,12 +35,10 @@ public class RentalDtoMapper {
         rental.setRented(rentalDtoRequest.getRented());
         rental.setReturned(rentalDtoRequest.getReturned());
         rental.setNotices(rentalDtoRequest.getNotices());
-        User user = new User();
-        user.setId(rentalDtoRequest.getUserId());
-        rental.setUser(user);
-        Tool tool = new Tool();
-        tool.setId(rentalDtoRequest.getToolId());
-        rental.setTool(tool);
+        Optional<User> user = userRepository.findById(rentalDtoRequest.getUserId());
+        user.ifPresent(rental::setUser);
+        Optional<Tool> tool = toolRepository.findById(rentalDtoRequest.getToolId());
+        tool.ifPresent(rental::setTool);
         return rental;
     }
 }
