@@ -25,7 +25,7 @@ public class LocationController {
     }
 
     @GetMapping
-    @Operation(description = "Get all locations", summary = "Get all locations")
+    @Operation(description = "Get all locations")
     @ApiResponse(responseCode = "200", description = "List of all locations", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = LocationDtoResponse.class)))})
     public List<LocationDtoResponse> getAllLocations() {
@@ -33,7 +33,7 @@ public class LocationController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific location by id", summary = "Get specific location by id")
+    @Operation(description = "Get specific location by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Location at provided id was found",
@@ -47,7 +47,7 @@ public class LocationController {
     }
 
     @PostMapping
-    @Operation(description = "Add new location", summary = "Add new location")
+    @Operation(description = "Add new location")
     @ApiResponse(responseCode = "201",
             description = "New location has added",
             content = {@Content(mediaType = "application/json",
@@ -62,7 +62,7 @@ public class LocationController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Updates the location with the given id", summary = "Updates the location with the given id")
+    @Operation(description = "Updates the location with the given id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Location successfully updated",
                     content = @Content),

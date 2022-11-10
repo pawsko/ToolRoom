@@ -25,7 +25,7 @@ public class PowerTypeController {
     }
 
     @GetMapping
-    @Operation(description = "Get all power types", summary = "Get all power types")
+    @Operation(description = "Get all power types")
     @ApiResponse(responseCode = "200", description = "List of all power types", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = PowerTypeDtoResponse.class)))})
     public List<PowerTypeDtoResponse> getAll() {
@@ -33,7 +33,7 @@ public class PowerTypeController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific power type by id",summary = "Get specific power type by id")
+    @Operation(description = "Get specific power type by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Power type at provided id was found",
@@ -47,7 +47,7 @@ public class PowerTypeController {
     }
 
     @PostMapping
-    @Operation(description = "Add new power type", summary = "Add new power type")
+    @Operation(description = "Add new power type")
     @ApiResponse(responseCode = "201",
             description = "New power type has added",
             content = {@Content(mediaType = "application/json",
@@ -62,7 +62,7 @@ public class PowerTypeController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific power type by id", summary = "Edit specific power type by id")
+    @Operation(description = "Edit specific power type by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Power type successfully updated",
                     content = @Content),

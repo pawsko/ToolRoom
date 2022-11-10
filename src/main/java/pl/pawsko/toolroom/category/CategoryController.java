@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
 import java.net.URI;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    @Operation(description = "Get all categories", summary = "Get all categories")
+    @Operation(description = "Get all categories")
     @ApiResponse(responseCode = "200", description = "List of all categories", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = CategoryDtoResponse.class)))})
     public List<CategoryDtoResponse> getAllCategories() {
@@ -34,7 +33,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific category by id",summary = "Get specific category by id")
+    @Operation(description = "Get specific category by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Category at provided id was found",
@@ -48,7 +47,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    @Operation(description = "Add new category", summary = "Add new category")
+    @Operation(description = "Add new category")
     @ApiResponse(responseCode = "201",
             description = "New category has added",
             content = {@Content(mediaType = "application/json",
@@ -63,7 +62,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific category by id", summary = "Edit specific category by id")
+    @Operation(description = "Edit specific category by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Category successfully updated",
                     content = @Content),

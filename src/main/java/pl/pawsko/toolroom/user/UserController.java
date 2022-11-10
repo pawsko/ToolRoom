@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping
-    @Operation(description = "Get all users", summary = "Get all users")
+    @Operation(description = "Get all users")
     @ApiResponse(responseCode = "200", description = "List of all users", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = UserDtoResponse.class)))})
     public List<UserDtoResponse> getAllUsers() {
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific user by id", summary = "Get specific user by id")
+    @Operation(description = "Get specific user by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "User at provided id was found",
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping
-    @Operation(description = "Add user", summary = "Add user")
+    @Operation(description = "Add user")
     @ApiResponse(responseCode = "201",
             description = "New user has added",
             content = {@Content(mediaType = "application/json",
@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific user by id", summary = "Edit specific user by id")
+    @Operation(description = "Edit specific user by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User successfully updated",
                     content = @Content),

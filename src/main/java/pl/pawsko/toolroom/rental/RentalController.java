@@ -27,7 +27,7 @@ public class RentalController {
     }
 
     @GetMapping
-    @Operation(description = "Get all rentals", summary = "Get all rentals")
+    @Operation(description = "Get all rentals")
     @ApiResponse(responseCode = "200", description = "List of all rentals", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = RentalDtoResponse.class)))})
     List<RentalDtoResponse> getAll() {
@@ -35,7 +35,7 @@ public class RentalController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific rental by id",summary = "Get specific rental by id")
+    @Operation(description = "Get specific rental by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Rental at provided id was found",
@@ -49,7 +49,7 @@ public class RentalController {
     }
 
     @PostMapping
-    @Operation(description = "Add new rental", summary = "Add new rental")
+    @Operation(description = "Add new rental")
     @ApiResponse(responseCode = "201",
             description = "New rental has added",
             content = {@Content(mediaType = "application/json",
@@ -64,7 +64,7 @@ public class RentalController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific rental by id", summary = "Edit specific rental by id")
+    @Operation(description = "Edit specific rental by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Rental successfully updated",
                     content = @Content),

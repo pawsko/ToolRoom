@@ -25,7 +25,7 @@ public class ManufacturerController {
     }
 
     @GetMapping
-    @Operation(description = "Get all manufacturers", summary = "Get all manufacturers")
+    @Operation(description = "Get all manufacturers")
     @ApiResponse(responseCode = "200", description = "List of all manufacturers", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = ManufacturerDtoResponse.class)))})
     public List<ManufacturerDtoResponse> getAll() {
@@ -33,7 +33,7 @@ public class ManufacturerController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific manufacturer by id",summary = "Get specific manufacturer by id")
+    @Operation(description = "Get specific manufacturer by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Manufacturer at provided id was found",
@@ -47,7 +47,7 @@ public class ManufacturerController {
     }
 
     @PostMapping
-    @Operation(description = "Add new manufacturer", summary = "Add new manufacturer")
+    @Operation(description = "Add new manufacturer")
     @ApiResponse(responseCode = "201",
             description = "New location has added",
             content = {@Content(mediaType = "application/json",
@@ -62,7 +62,7 @@ public class ManufacturerController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific manufacturer by id", summary = "Edit specific manufacturer by id")
+    @Operation(description = "Edit specific manufacturer by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Manufacturer successfully updated",
                     content = @Content),

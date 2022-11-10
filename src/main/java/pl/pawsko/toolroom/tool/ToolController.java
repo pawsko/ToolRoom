@@ -27,7 +27,7 @@ public class ToolController {
 
 
     @GetMapping
-    @Operation(description = "Get all tools", summary = "Get all tools")
+    @Operation(description = "Get all tools")
     @ApiResponse(responseCode = "200", description = "List of all tools", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = ToolDtoResponse.class)))})
     public List<ToolDtoResponse> getAllTools() {
@@ -35,7 +35,7 @@ public class ToolController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific tool by id",summary = "Get specific tool by id")
+    @Operation(description = "Get specific tool by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Tool at provided id was found",
@@ -49,7 +49,7 @@ public class ToolController {
     }
 
     @PostMapping
-    @Operation(description = "Add new tool", summary = "Add new tool")
+    @Operation(description = "Add new tool")
     @ApiResponse(responseCode = "201",
             description = "New tool has added",
             content = {@Content(mediaType = "application/json",
@@ -64,7 +64,7 @@ public class ToolController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific tool by id", summary = "Edit specific tool by id")
+    @Operation(description = "Edit specific tool by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Tool successfully updated",
                     content = @Content),

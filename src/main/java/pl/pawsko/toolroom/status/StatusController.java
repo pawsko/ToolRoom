@@ -25,7 +25,7 @@ public class StatusController {
     }
 
     @GetMapping
-    @Operation(description = "Get all statuses", summary = "Get all statuses")
+    @Operation(description = "Get all statuses")
     @ApiResponse(responseCode = "200", description = "List of all statuses", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = StatusDtoResponse.class)))})
     List<StatusDtoResponse> getAll() {
@@ -33,7 +33,7 @@ public class StatusController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific status by id", summary = "Get specific status by id")
+    @Operation(description = "Get specific status by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Status at provided id was found",
@@ -47,7 +47,7 @@ public class StatusController {
     }
 
     @PostMapping
-    @Operation(description = "Add new status", summary = "Add new status")
+    @Operation(description = "Add new status")
     @ApiResponse(responseCode = "201",
             description = "New status has added",
             content = {@Content(mediaType = "application/json",
@@ -62,7 +62,7 @@ public class StatusController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific status by id", summary = "Edit specific status by id")
+    @Operation(description = "Edit specific status by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Status successfully updated",
                     content = @Content),
