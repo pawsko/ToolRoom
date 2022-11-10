@@ -34,7 +34,7 @@ public class ManufacturerController {
     @Operation(description = "Get all manufacturers")
     @ApiResponse(responseCode = "200", description = "List of all manufacturers", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = ManufacturerDtoResponse.class)))})
-    public List<ManufacturerDtoResponse> getAll() {
+    public List<ManufacturerDtoResponse> getAllManufacturers() {
         return manufacturerService.getAllManufactures();
     }
 
@@ -46,7 +46,7 @@ public class ManufacturerController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ManufacturerDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "The manufacturer with the given ID was not found", content = @Content)})
-    public ResponseEntity<ManufacturerDtoResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<ManufacturerDtoResponse> getManufacturerById(@PathVariable Long id) {
         return manufacturerService.findManufacturerById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -74,7 +74,7 @@ public class ManufacturerController {
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "The manufacturer with the given ID was not found",
                     content = @Content)})
-    ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody ManufacturerDtoRequest manufacturerDtoRequest) {
+    ResponseEntity<?> replaceManufacturer(@PathVariable Long id, @RequestBody ManufacturerDtoRequest manufacturerDtoRequest) {
         return manufacturerService.replaceManufacturer(id, manufacturerDtoRequest)
                 .map(c -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
