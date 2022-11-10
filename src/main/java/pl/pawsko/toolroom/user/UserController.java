@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
 import java.util.List;
@@ -61,10 +62,7 @@ public class UserController {
                     schema = @Schema(implementation = UserDtoRequest.class))})
     ResponseEntity<UserDtoResponse> saveUser(@RequestBody UserDtoRequest userDtoRequest) {
         UserDtoResponse savedUser = userService.saveUser(userDtoRequest);
-        URI savedUserUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedUser.getId())
-                .toUri();
+        URI savedUserUri = UriHelper.getUri(savedUser.getId());
         return ResponseEntity.created(savedUserUri).body(savedUser);
     }
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
 import java.util.List;
@@ -62,10 +63,7 @@ public class ToolController {
                     schema = @Schema(implementation = ToolDtoRequest.class))})
             ResponseEntity<ToolDtoResponse> saveTool(@RequestBody ToolDtoRequest toolDtoRequest) {
         ToolDtoResponse savedTool = toolService.saveTool(toolDtoRequest);
-        URI savedToolUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedTool.getId())
-                .toUri();
+        URI savedToolUri = UriHelper.getUri(savedTool.getId());
         return ResponseEntity.created(savedToolUri).body(savedTool);
     }
 

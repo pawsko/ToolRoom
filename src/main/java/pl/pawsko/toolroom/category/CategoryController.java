@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
 import java.util.List;
@@ -60,10 +61,7 @@ public class CategoryController {
                     schema = @Schema(implementation = CategoryDtoRequest.class))})
     ResponseEntity<CategoryDtoResponse> saveCategory(@RequestBody CategoryDtoRequest categoryDtoRequest) {
         CategoryDtoResponse savedCategory = categoryService.saveCategory(categoryDtoRequest);
-        URI savedCategoryUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedCategory.getId())
-                .toUri();
+        URI savedCategoryUri = UriHelper.getUri(savedCategory.getId());
         return ResponseEntity.created(savedCategoryUri).body(savedCategory);
     }
 

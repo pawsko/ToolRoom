@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
 import java.util.List;
@@ -54,10 +55,7 @@ public class RentalController {
                     schema = @Schema(implementation = RentalDtoRequest.class))})
     ResponseEntity<RentalDtoResponse> saveRental(@RequestBody RentalDtoRequest rentalDtoRequest) {
         RentalDtoResponse savedRental = rentalService.saveRental(rentalDtoRequest);
-        URI savedRentalUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("{id}")
-                .buildAndExpand(savedRental.getId())
-                .toUri();
+        URI savedRentalUri = UriHelper.getUri(savedRental.getId());
         return ResponseEntity.created(savedRentalUri).body(savedRental);
     }
 

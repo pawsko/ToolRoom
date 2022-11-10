@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
 import java.util.List;
@@ -60,10 +61,7 @@ public class ManufacturerController {
                     schema = @Schema(implementation = ManufacturerDtoRequest.class))})
     ResponseEntity<ManufacturerDtoResponse> saveManufacturer(@RequestBody ManufacturerDtoRequest manufacturerDtoRequest) {
         ManufacturerDtoResponse savedManufacturer = manufacturerService.saveManufacturer(manufacturerDtoRequest);
-        URI savedManufacturerUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedManufacturer.getId())
-                .toUri();
+        URI savedManufacturerUri = UriHelper.getUri(savedManufacturer.getId());
         return ResponseEntity.created(savedManufacturerUri).body(savedManufacturer);
     }
 

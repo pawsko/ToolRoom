@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
 import java.util.List;
@@ -60,10 +61,7 @@ public class PowerTypeController {
                     schema = @Schema(implementation = PowerTypeDtoRequest.class))})
     ResponseEntity<PowerTypeDtoResponse> save(@RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
         PowerTypeDtoResponse savedPowerType = powerTypeService.savePowerType(powerTypeDtoRequest);
-        URI savedPowerTypeUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedPowerType.getId())
-                .toUri();
+        URI savedPowerTypeUri = UriHelper.getUri(savedPowerType.getId());
         return ResponseEntity.created(savedPowerTypeUri).body(savedPowerType);
     }
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
 import java.util.List;
@@ -60,10 +61,7 @@ public class StatusController {
                     schema = @Schema(implementation = StatusDtoRequest.class))})
     ResponseEntity<StatusDtoResponse> save(@RequestBody StatusDtoRequest statusDtoRequest) {
         StatusDtoResponse savedStatus = statusService.saveStatus(statusDtoRequest);
-        URI savedStatusUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedStatus.getId())
-                .toUri();
+        URI savedStatusUri = UriHelper.getUri(savedStatus.getId());
         return ResponseEntity.created(savedStatusUri).body(savedStatus);
     }
 
