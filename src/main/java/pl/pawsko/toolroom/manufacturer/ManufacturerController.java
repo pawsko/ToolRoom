@@ -53,12 +53,12 @@ public class ManufacturerController {
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = ManufacturerDtoRequest.class))})
     ResponseEntity<ManufacturerDtoResponse> saveManufacturer(@RequestBody ManufacturerDtoRequest manufacturerDtoRequest) {
-        ManufacturerDtoResponse saveManufacturer = manufacturerService.saveManufacturer(manufacturerDtoRequest);
+        ManufacturerDtoResponse savedManufacturer = manufacturerService.saveManufacturer(manufacturerDtoRequest);
         URI savedManufacturerUri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(saveManufacturer.getId())
+                .buildAndExpand(savedManufacturer.getId())
                 .toUri();
-        return ResponseEntity.created(savedManufacturerUri).body(saveManufacturer);
+        return ResponseEntity.created(savedManufacturerUri).body(savedManufacturer);
     }
 
     @PutMapping("/{id}")
