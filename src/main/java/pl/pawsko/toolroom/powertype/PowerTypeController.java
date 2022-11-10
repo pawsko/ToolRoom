@@ -76,7 +76,7 @@ public class PowerTypeController {
                     content = @Content)})
     ResponseEntity<?> replace(@PathVariable Long id, @RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
         return powerTypeService.replacePowerType(id, powerTypeDtoRequest)
-                .map(c -> ResponseEntity.noContent().build())
+                .map(powerTypeDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }
 }

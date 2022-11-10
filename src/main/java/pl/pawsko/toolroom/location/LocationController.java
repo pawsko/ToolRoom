@@ -76,7 +76,7 @@ public class LocationController {
                     content = @Content)})
     ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody LocationDtoRequest locationDtoRequest) {
         return locationService.replaceLocation(id, locationDtoRequest)
-                .map(l -> ResponseEntity.noContent().build())
+                .map(locationDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }
 }

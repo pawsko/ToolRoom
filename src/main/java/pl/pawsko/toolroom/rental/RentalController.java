@@ -78,7 +78,7 @@ public class RentalController {
                     content = @Content)})
     ResponseEntity<?> replaceRental(@PathVariable Long id, @RequestBody RentalDtoRequest rentalDtoRequest) {
         return rentalService.replaceRental(id, rentalDtoRequest)
-                .map(r -> ResponseEntity.noContent().build())
+                .map(rentalDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }
 }

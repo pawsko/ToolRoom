@@ -77,7 +77,7 @@ public class UserController {
                     content = @Content)})
     ResponseEntity<?> replaceUser(@PathVariable Long id, @RequestBody UserDtoRequest userDtoRequest) {
         return userService.replaceUser(id, userDtoRequest)
-                .map(c -> ResponseEntity.noContent().build())
+                .map(userDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }
 }

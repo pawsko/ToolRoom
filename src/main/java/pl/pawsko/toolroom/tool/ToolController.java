@@ -78,7 +78,7 @@ public class ToolController {
                     content = @Content)})
     ResponseEntity<?> replaceTool(@PathVariable Long id, @RequestBody ToolDtoRequest toolDtoRequest) {
         return toolService.replaceTool(id, toolDtoRequest)
-                .map(c -> ResponseEntity.noContent().build())
+                .map(toolDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }
 }

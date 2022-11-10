@@ -76,7 +76,7 @@ public class CategoryController {
                     content = @Content)})
     ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody CategoryDtoRequest categoryDtoRequest) {
         return categoryService.replaceCategory(id, categoryDtoRequest)
-                .map(c -> ResponseEntity.noContent().build())
+                .map(categoryDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }
 }

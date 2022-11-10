@@ -76,7 +76,7 @@ public class ManufacturerController {
                     content = @Content)})
     ResponseEntity<?> replaceManufacturer(@PathVariable Long id, @RequestBody ManufacturerDtoRequest manufacturerDtoRequest) {
         return manufacturerService.replaceManufacturer(id, manufacturerDtoRequest)
-                .map(c -> ResponseEntity.noContent().build())
+                .map(manufacturerDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }
 }

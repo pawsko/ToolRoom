@@ -76,7 +76,7 @@ public class StatusController {
                     content = @Content)})
     ResponseEntity<?> replace(@PathVariable Long id, @RequestBody StatusDtoRequest statusDtoRequest) {
         return statusService.replaceStatus(id, statusDtoRequest)
-                .map(c -> ResponseEntity.noContent().build())
+                .map(statusDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }
 }
