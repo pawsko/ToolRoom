@@ -7,12 +7,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -31,7 +36,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    @Operation(description = "Get all categories", summary = "Get all categories")
+    @Operation(description = "Get all categories")
     @ApiResponse(responseCode = "200", description = "List of all categories", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = CategoryDtoResponse.class)))})
     public List<CategoryDtoResponse> getAllCategories() {
@@ -39,21 +44,21 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    @Operation(description = "Get specific category by id",summary = "Get specific category by id")
+    @Operation(description = "Get specific category by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Category at provided id was found",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = CategoryDtoResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "The category with the given ID was not found", content = @Content)})
-    ResponseEntity<CategoryDtoResponse> getById(@PathVariable Long id) {
+            @ApiResponse(responseCode = "404", description = "Category with the given ID was not found", content = @Content)})
+    ResponseEntity<CategoryDtoResponse> getCategotyById(@PathVariable Long id) {
         return categoryService.getCategoryById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    @Operation(description = "Add new category", summary = "Add new category")
+    @Operation(description = "Add new category")
     @ApiResponse(responseCode = "201",
             description = "New category has added",
             content = {@Content(mediaType = "application/json",
@@ -61,10 +66,7 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<CategoryDtoResponse> saveCategory(@Valid @RequestBody CategoryDtoRequest categoryDtoRequest) {
         CategoryDtoResponse savedCategory = categoryService.saveCategory(categoryDtoRequest);
-        URI savedCategoryUri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedCategory.getId())
-                .toUri();
+        URI savedCategoryUri = UriHelper.getUri(savedCategory.getId());
         return ResponseEntity.created(savedCategoryUri).body(savedCategory);
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -76,15 +78,15 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Edit specific category by id", summary = "Edit specific category by id")
+    @Operation(description = "Edit specific category by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Category successfully updated",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "The category with the given ID was not found",
+            @ApiResponse(responseCode = "404", description = "Category with the given ID was not found",
                     content = @Content)})
     ResponseEntity<?> replaceCategory(@PathVariable Long id, @Valid @RequestBody CategoryDtoRequest categoryDtoRequest) {
         return categoryService.replaceCategory(id, categoryDtoRequest)
-                .map(c -> ResponseEntity.noContent().build())
+                .map(categoryDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
     }
 }
