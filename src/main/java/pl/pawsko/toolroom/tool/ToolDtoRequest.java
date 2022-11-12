@@ -2,9 +2,15 @@ package pl.pawsko.toolroom.tool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import pl.pawsko.toolroom.tool.validators.*;
+import pl.pawsko.toolroom.tool.validators.CategoryCustomConstraint;
+import pl.pawsko.toolroom.tool.validators.LocationCustomConstraint;
+import pl.pawsko.toolroom.tool.validators.ManufacturerCustomConstraint;
+import pl.pawsko.toolroom.tool.validators.PowerTypeCustomConstraint;
+import pl.pawsko.toolroom.tool.validators.StatusCustomConstraint;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 @Data
 public class ToolDtoRequest {

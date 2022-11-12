@@ -1,6 +1,6 @@
 package pl.pawsko.toolroom.location;
 
-import lombok.*;
+import lombok.Data;
 
 @Data
 public class LocationDtoResponse {
