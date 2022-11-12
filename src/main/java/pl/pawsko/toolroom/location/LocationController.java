@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
@@ -46,7 +45,7 @@ public class LocationController {
                     description = "Location at provided id was found",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = LocationDtoResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "The location with the given ID was not found", content = @Content)})
+            @ApiResponse(responseCode = "404", description = "Location with the given ID was not found", content = @Content)})
     public ResponseEntity<LocationDtoResponse> getLocationById(@PathVariable Long id) {
         return locationService.getLocationById(id)
                 .map(ResponseEntity::ok)
@@ -66,11 +65,11 @@ public class LocationController {
     }
 
     @PutMapping("/{id}")
-    @Operation(description = "Updates the location with the given id")
+    @Operation(description = "Edit specific location by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Location successfully updated",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "The location with the given ID was not found",
+            @ApiResponse(responseCode = "404", description = "Location with the given ID was not found",
                     content = @Content)})
     ResponseEntity<?> replaceCategory(@PathVariable Long id, @RequestBody LocationDtoRequest locationDtoRequest) {
         return locationService.replaceLocation(id, locationDtoRequest)

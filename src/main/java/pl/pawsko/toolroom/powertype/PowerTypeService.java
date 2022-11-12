@@ -17,7 +17,7 @@ public class PowerTypeService {
         this.powerTypeDtoMapper = powerTypeDtoMapper;
     }
 
-    public List<PowerTypeDtoResponse> getAll() {
+    public List<PowerTypeDtoResponse> getAllPowerTypes() {
         return StreamSupport.stream(powerTypeRepository.findAll().spliterator(), false)
                 .map(powerTypeDtoMapper::map)
                 .collect(Collectors.toList());

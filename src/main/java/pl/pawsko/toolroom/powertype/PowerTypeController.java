@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
@@ -35,8 +34,8 @@ public class PowerTypeController {
     @Operation(description = "Get all power types")
     @ApiResponse(responseCode = "200", description = "List of all power types", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = PowerTypeDtoResponse.class)))})
-    public List<PowerTypeDtoResponse> getAll() {
-        return powerTypeService.getAll();
+    public List<PowerTypeDtoResponse> getAllPowerTypes() {
+        return powerTypeService.getAllPowerTypes();
     }
 
     @GetMapping("/{id}")
@@ -46,8 +45,8 @@ public class PowerTypeController {
                     description = "Power type at provided id was found",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = PowerTypeDtoResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "The power type with the given ID was not found", content = @Content)})
-    public ResponseEntity<PowerTypeDtoResponse> getById(@PathVariable Long id) {
+            @ApiResponse(responseCode = "404", description = "Power type with the given ID was not found", content = @Content)})
+    public ResponseEntity<PowerTypeDtoResponse> getPowerTypeById(@PathVariable Long id) {
         return powerTypeService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -70,9 +69,9 @@ public class PowerTypeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Power type successfully updated",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "The power type with the given ID was not found",
+            @ApiResponse(responseCode = "404", description = "Power type with the given ID was not found",
                     content = @Content)})
-    ResponseEntity<?> replace(@PathVariable Long id, @RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
+    ResponseEntity<?> replacePowerType(@PathVariable Long id, @RequestBody PowerTypeDtoRequest powerTypeDtoRequest) {
         return powerTypeService.replacePowerType(id, powerTypeDtoRequest)
                 .map(powerTypeDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());

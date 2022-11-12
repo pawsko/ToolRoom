@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
@@ -47,7 +46,7 @@ public class UserController {
                     description = "User at provided id was found",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = UserDtoResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "The user with the given ID was not found", content = @Content)})
+            @ApiResponse(responseCode = "404", description = "User with the given ID was not found", content = @Content)})
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
@@ -71,7 +70,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User successfully updated",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "The user with the given ID was not found",
+            @ApiResponse(responseCode = "404", description = "User with the given ID was not found",
                     content = @Content)})
     ResponseEntity<?> replaceUser(@PathVariable Long id, @RequestBody UserDtoRequest userDtoRequest) {
         return userService.replaceUser(id, userDtoRequest)

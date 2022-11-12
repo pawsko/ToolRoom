@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.pawsko.toolroom.hellpers.UriHelper;
 
 import java.net.URI;
@@ -35,7 +34,7 @@ public class StatusController {
     @Operation(description = "Get all statuses")
     @ApiResponse(responseCode = "200", description = "List of all statuses", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = StatusDtoResponse.class)))})
-    List<StatusDtoResponse> getAll() {
+    List<StatusDtoResponse> getAllStatuses() {
         return statusService.getAllStatuses();
     }
 
@@ -46,8 +45,8 @@ public class StatusController {
                     description = "Status at provided id was found",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = StatusDtoResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "The status with the given ID was not found", content = @Content)})
-    ResponseEntity<StatusDtoResponse> getById(@PathVariable Long id) {
+            @ApiResponse(responseCode = "404", description = "Status with the given ID was not found", content = @Content)})
+    ResponseEntity<StatusDtoResponse> getStatusById(@PathVariable Long id) {
         return statusService.getStatusById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -70,9 +69,9 @@ public class StatusController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Status successfully updated",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "The status with the given ID was not found",
+            @ApiResponse(responseCode = "404", description = "Status with the given ID was not found",
                     content = @Content)})
-    ResponseEntity<?> replace(@PathVariable Long id, @RequestBody StatusDtoRequest statusDtoRequest) {
+    ResponseEntity<?> replaceStatus(@PathVariable Long id, @RequestBody StatusDtoRequest statusDtoRequest) {
         return statusService.replaceStatus(id, statusDtoRequest)
                 .map(statusDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
