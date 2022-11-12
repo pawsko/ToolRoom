@@ -1,7 +1,6 @@
 package pl.pawsko.toolroom.rental;
 
 import org.springframework.stereotype.Service;
-import pl.pawsko.toolroom.category.CategoryDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,29 +17,29 @@ public class RentalService {
         this.rentalDtoMapper = rentalDtoMapper;
     }
 
-    public List<RentalDto> getAllRentals() {
+    public List<RentalDtoResponse> getAllRentals() {
         return StreamSupport.stream(rentalRepository.findAll().spliterator(), false)
                 .map(rentalDtoMapper::map)
                 .collect(Collectors.toList());
     }
 
-    public Optional<RentalDto> getRentalById(Long id) {
+    public Optional<RentalDtoResponse> getRentalById(Long id) {
         return rentalRepository.findById(id)
                 .map(rentalDtoMapper::map);
     }
 
-    public RentalDto saveRental(RentalDto rentalDto) {
-        Rental rental = rentalDtoMapper.map(rentalDto);
+    public RentalDtoResponse saveRental(RentalDtoRequest rentalDtoRequest) {
+        Rental rental = rentalDtoMapper.map(rentalDtoRequest);
         Rental savedRental = rentalRepository.save(rental);
         return rentalDtoMapper.map(savedRental);
     }
 
-    public Optional<RentalDto> replaceRental(Long id, RentalDto rentalDto) {
+    public Optional<RentalDtoResponse> replaceRental(Long id, RentalDtoRequest rentalDtoRequest) {
         if (!rentalRepository.existsById(id)) {
             return Optional.empty();
         } else {
-            rentalDto.setId(id);
-            Rental rentalToUpdate = rentalDtoMapper.map(rentalDto);
+            Rental rentalToUpdate = rentalDtoMapper.map(rentalDtoRequest);
+            rentalToUpdate.setId(id);
             Rental updatedEntity = rentalRepository.save(rentalToUpdate);
             return Optional.of(rentalDtoMapper.map(updatedEntity));
         }

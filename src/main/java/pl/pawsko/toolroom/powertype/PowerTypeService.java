@@ -17,29 +17,29 @@ public class PowerTypeService {
         this.powerTypeDtoMapper = powerTypeDtoMapper;
     }
 
-    public List<PowerTypeDto> getAll() {
+    public List<PowerTypeDtoResponse> getAllPowerTypes() {
         return StreamSupport.stream(powerTypeRepository.findAll().spliterator(), false)
                 .map(powerTypeDtoMapper::map)
                 .collect(Collectors.toList());
     }
 
-    public Optional<PowerTypeDto> findById(long id) {
+    public Optional<PowerTypeDtoResponse> findById(long id) {
         return powerTypeRepository.findById(id)
                 .map(powerTypeDtoMapper::map);
     }
 
-    public PowerTypeDto savePowerType(PowerTypeDto powerTypeDto) {
-        PowerType powerType = powerTypeDtoMapper.map(powerTypeDto);
+    public PowerTypeDtoResponse savePowerType(PowerTypeDtoRequest powerTypeDtoRequest) {
+        PowerType powerType = powerTypeDtoMapper.map(powerTypeDtoRequest);
         PowerType savedPowerType = powerTypeRepository.save(powerType);
         return powerTypeDtoMapper.map(savedPowerType);
     }
 
-    public Optional<PowerTypeDto> replacePowerType(Long id, PowerTypeDto powerTypeDto) {
+    public Optional<PowerTypeDtoResponse> replacePowerType(Long id, PowerTypeDtoRequest powerTypeDtoRequest) {
         if (!powerTypeRepository.existsById(id)) {
             return Optional.empty();
         } else {
-            powerTypeDto.setId(id);
-            PowerType powerTypeToUpdate = powerTypeDtoMapper.map(powerTypeDto);
+            PowerType powerTypeToUpdate = powerTypeDtoMapper.map(powerTypeDtoRequest);
+            powerTypeToUpdate.setId(id);
             PowerType updatedEntity = powerTypeRepository.save(powerTypeToUpdate);
             return Optional.of(powerTypeDtoMapper.map(updatedEntity));
         }

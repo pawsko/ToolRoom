@@ -17,29 +17,29 @@ public class CategoryService {
         this.categoryDtoMapper = categoryDtoMapper;
     }
 
-    public List<CategoryDto> getAllCategories() {
+    public List<CategoryDtoResponse> getAllCategories() {
         return StreamSupport.stream(categoryRepository.findAll().spliterator(), false)
                 .map(categoryDtoMapper::map)
                 .collect(Collectors.toList());
     }
 
-    public Optional<CategoryDto> getCategoryById(Long id) {
+    public Optional<CategoryDtoResponse> getCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .map(categoryDtoMapper::map);
     }
 
-    public CategoryDto saveCategory(CategoryDto categoryDto) {
-        Category category = categoryDtoMapper.map(categoryDto);
+    public CategoryDtoResponse saveCategory(CategoryDtoRequest categoryDtoRequest) {
+        Category category = categoryDtoMapper.map(categoryDtoRequest);
         Category savedCategory = categoryRepository.save(category);
         return categoryDtoMapper.map(savedCategory);
     }
 
-    public Optional<CategoryDto> replaceCategory(Long id, CategoryDto categoryDto) {
+    public Optional<CategoryDtoResponse> replaceCategory(Long id, CategoryDtoRequest categoryDtoRequest) {
         if (!categoryRepository.existsById(id)) {
             return Optional.empty();
         } else {
-            categoryDto.setId(id);
-            Category categoryToUpdate = categoryDtoMapper.map(categoryDto);
+            Category categoryToUpdate = categoryDtoMapper.map(categoryDtoRequest);
+            categoryToUpdate.setId(id);
             Category updatedEntity = categoryRepository.save(categoryToUpdate);
             return Optional.of(categoryDtoMapper.map(updatedEntity));
         }

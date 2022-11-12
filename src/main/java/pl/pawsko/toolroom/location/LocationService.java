@@ -18,28 +18,28 @@ public class LocationService {
         this.locationDtoMapper = locationDtoMapper;
     }
 
-    public List<LocationDto> getAllLocations() {
+    public List<LocationDtoResponse> getAllLocations() {
         return StreamSupport.stream(locationRepository.findAll().spliterator(), false)
                 .map(locationDtoMapper::map)
                 .collect(Collectors.toList());
     }
-    public Optional<LocationDto> getLocationById (Long id) {
+    public Optional<LocationDtoResponse> getLocationById (Long id) {
         return locationRepository.findById(id)
                 .map(locationDtoMapper::map);
     }
 
-    public LocationDto saveLocation(LocationDto locationDto) {
-        Location location = locationDtoMapper.map(locationDto);
+    public LocationDtoResponse saveLocation(LocationDtoRequest locationDtoRequest) {
+        Location location = locationDtoMapper.map(locationDtoRequest);
         Location savedLocation = locationRepository.save(location);
         return locationDtoMapper.map(savedLocation);
     }
 
-    public Optional<LocationDto> replaceLocation(Long id, LocationDto locationDto) {
+    public Optional<LocationDtoResponse> replaceLocation(Long id, LocationDtoRequest locationDtoRequest) {
         if (!locationRepository.existsById(id)) {
             return Optional.empty();
         } else {
-            locationDto.setId(id);
-            Location locationToUpdate = locationDtoMapper.map(locationDto);
+            Location locationToUpdate = locationDtoMapper.map(locationDtoRequest);
+            locationToUpdate.setId(id);
             Location updatedEntity = locationRepository.save(locationToUpdate);
             return Optional.of(locationDtoMapper.map(updatedEntity));
         }

@@ -4,17 +4,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ManufacturerDtoMapper {
-    ManufacturerDto map(Manufacturer manufacturer) {
-        ManufacturerDto dto = new ManufacturerDto();
+    ManufacturerDtoResponse map(Manufacturer manufacturer) {
+        ManufacturerDtoResponse dto = new ManufacturerDtoResponse();
         dto.setId(manufacturer.getId());
         dto.setManufacturerName(manufacturer.getManufacturerName());
         return dto;
     }
 
-    Manufacturer map(ManufacturerDto manufacturerDto) {
+    Manufacturer map(ManufacturerDtoRequest manufacturerDtoRequest) {
         Manufacturer manufacturer = new Manufacturer();
-        manufacturer.setId(manufacturerDto.getId());
-        manufacturer.setManufacturerName(manufacturerDto.getManufacturerName());
+        manufacturer.setManufacturerName(manufacturerDtoRequest.getManufacturerName());
         return manufacturer;
     }
 }

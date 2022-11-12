@@ -17,29 +17,29 @@ public class StatusService {
         this.statusDtoMapper = statusDtoMapper;
     }
 
-    public List<StatusDto> getAllStatuses() {
+    public List<StatusDtoResponse> getAllStatuses() {
         return StreamSupport.stream(statusRepository.findAll().spliterator(), false)
                 .map(statusDtoMapper::map)
                 .collect(Collectors.toList());
     }
 
-    public Optional<StatusDto> getStatusById(Long id) {
+    public Optional<StatusDtoResponse> getStatusById(Long id) {
         return statusRepository.findById(id)
                 .map(statusDtoMapper::map);
     }
 
-    public StatusDto saveStatus(StatusDto statusDto) {
-        Status status = statusDtoMapper.map(statusDto);
+    public StatusDtoResponse saveStatus(StatusDtoRequest statusDtoRequest) {
+        Status status = statusDtoMapper.map(statusDtoRequest);
         Status savedStatus = statusRepository.save(status);
         return statusDtoMapper.map(savedStatus);
     }
 
-    public Optional<StatusDto> replaceStatus(Long id, StatusDto statusDto) {
+    public Optional<StatusDtoResponse> replaceStatus(Long id, StatusDtoRequest statusDtoRequest) {
         if (!statusRepository.existsById(id)) {
             return Optional.empty();
         } else {
-            statusDto.setId(id);
-            Status statusToUpdate = statusDtoMapper.map(statusDto);
+            Status statusToUpdate = statusDtoMapper.map(statusDtoRequest);
+            statusToUpdate.setId(id);
             Status updatedEntity = statusRepository.save(statusToUpdate);
             return Optional.of(statusDtoMapper.map(updatedEntity));
         }

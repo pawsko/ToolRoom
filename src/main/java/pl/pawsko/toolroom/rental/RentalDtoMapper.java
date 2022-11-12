@@ -1,11 +1,13 @@
 package pl.pawsko.toolroom.rental;
 
 import org.springframework.stereotype.Service;
+import pl.pawsko.toolroom.tool.Tool;
+import pl.pawsko.toolroom.user.User;
 
 @Service
 public class RentalDtoMapper {
-    RentalDto map(Rental rental) {
-        RentalDto dto = new RentalDto();
+    RentalDtoResponse map(Rental rental) {
+        RentalDtoResponse dto = new RentalDtoResponse();
         dto.setId(rental.getId());
         dto.setRented(rental.getRented());
         dto.setReturned(rental.getReturned());
@@ -15,14 +17,17 @@ public class RentalDtoMapper {
         return dto;
     }
 
-    public Rental map(RentalDto rentalDto) {
+    public Rental map(RentalDtoRequest rentalDtoRequest) {
         Rental rental = new Rental();
-        rental.setId(rentalDto.getId());
-        rental.setRented(rentalDto.getRented());
-        rental.setReturned(rentalDto.getReturned());
-        rental.setNotices(rentalDto.getNotices());
-        rental.setUser(rentalDto.getUser());
-        rental.setTool(rentalDto.getTool());
+        rental.setRented(rentalDtoRequest.getRented());
+        rental.setReturned(rentalDtoRequest.getReturned());
+        rental.setNotices(rentalDtoRequest.getNotices());
+        User user = new User();
+        user.setId(rentalDtoRequest.getUserId());
+        rental.setUser(user);
+        Tool tool = new Tool();
+        tool.setId(rentalDtoRequest.getToolId());
+        rental.setTool(tool);
         return rental;
     }
 }

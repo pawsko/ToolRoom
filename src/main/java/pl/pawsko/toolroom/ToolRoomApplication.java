@@ -9,5 +9,4 @@ public class ToolRoomApplication {
     public static void main(String[] args) {
         SpringApplication.run(ToolRoomApplication.class, args);
     }
-
 }
