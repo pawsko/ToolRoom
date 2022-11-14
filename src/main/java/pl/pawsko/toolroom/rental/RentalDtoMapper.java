@@ -1,5 +1,6 @@
 package pl.pawsko.toolroom.rental;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pawsko.toolroom.tool.Tool;
 import pl.pawsko.toolroom.tool.ToolRepository;
@@ -9,15 +10,11 @@ import pl.pawsko.toolroom.user.UserRepository;
 import java.util.Optional;
 
 @Service
-public class RentalDtoMapper {
+@RequiredArgsConstructor
+class RentalDtoMapper {
 
     public final UserRepository userRepository;
     public final ToolRepository toolRepository;
-
-    public RentalDtoMapper(UserRepository userRepository, ToolRepository toolRepository) {
-        this.userRepository = userRepository;
-        this.toolRepository = toolRepository;
-    }
 
     RentalDtoResponse map(Rental rental) {
         RentalDtoResponse dto = new RentalDtoResponse();
@@ -30,7 +27,7 @@ public class RentalDtoMapper {
         return dto;
     }
 
-    public Rental map(RentalDtoRequest rentalDtoRequest) {
+    Rental map(RentalDtoRequest rentalDtoRequest) {
         Rental rental = new Rental();
         rental.setRented(rentalDtoRequest.getRented());
         rental.setReturned(rentalDtoRequest.getReturned());

@@ -3,8 +3,8 @@ package pl.pawsko.toolroom.user;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDtoMapper {
-    public UserDtoResponse map(User user) {
+class UserDtoMapper {
+    UserDtoResponse map(User user) {
         UserDtoResponse dto = new UserDtoResponse();
         dto.setId(user.getId());
         dto.setFirstName(user.getFirstName());
@@ -14,7 +14,7 @@ public class UserDtoMapper {
         return dto;
     }
 
-    public User map(UserDtoRequest userDtoRequest) {
+    User map(UserDtoRequest userDtoRequest) {
         User user = new User();
         user.setFirstName(userDtoRequest.getFirstName());
         user.setLastName(userDtoRequest.getLastName());

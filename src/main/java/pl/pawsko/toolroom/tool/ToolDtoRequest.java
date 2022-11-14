@@ -13,7 +13,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 @Data
-public class ToolDtoRequest {
+class ToolDtoRequest {
     @Size(min = 3, message = "Tool name must contain minimum {min} signs")
     private String name;
     private String model;

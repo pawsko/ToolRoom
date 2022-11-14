@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,21 +30,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "Users")
 @RequestMapping("/api/user")
-public class UserController {
+class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userController) {
-        this.userService = userController;
-    }
 
     @GetMapping
     @Operation(description = "Get all users")
     @ApiResponse(responseCode = "200", description = "List of all users", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = UserDtoResponse.class)))})
-    public List<UserDtoResponse> getAllUsers() {
+    List<UserDtoResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 
@@ -55,7 +53,7 @@ public class UserController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = UserDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "User with the given ID was not found", content = @Content)})
-    public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
+    ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -72,13 +70,6 @@ public class UserController {
         URI savedUserUri = UriHelper.getUri(savedUser.getId());
         return ResponseEntity.created(savedUserUri).body(savedUser);
     }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-    }
 
     @PutMapping("/{id}")
     @Operation(description = "Edit specific user by id")
@@ -91,5 +82,13 @@ public class UserController {
         return userService.replaceUser(id, userDtoRequest)
                 .map(userDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 }

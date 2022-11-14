@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,14 +30,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "Rentals")
 @RequestMapping("/api/rental")
-public class RentalController {
+class RentalController {
     private final RentalService rentalService;
-
-    public RentalController(RentalService rentalService) {
-        this.rentalService = rentalService;
-    }
 
     @GetMapping
     @Operation(description = "Get all rentals")
@@ -71,13 +69,6 @@ public class RentalController {
         URI savedRentalUri = UriHelper.getUri(savedRental.getId());
         return ResponseEntity.created(savedRentalUri).body(savedRental);
     }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-    }
 
     @PutMapping("/{id}")
     @Operation(description = "Edit specific rental by id")
@@ -90,5 +81,13 @@ public class RentalController {
         return rentalService.replaceRental(id, rentalDtoRequest)
                 .map(rentalDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 }

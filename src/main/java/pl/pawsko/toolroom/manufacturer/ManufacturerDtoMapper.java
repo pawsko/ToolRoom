@@ -3,7 +3,7 @@ package pl.pawsko.toolroom.manufacturer;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ManufacturerDtoMapper {
+class ManufacturerDtoMapper {
     ManufacturerDtoResponse map(Manufacturer manufacturer) {
         ManufacturerDtoResponse dto = new ManufacturerDtoResponse();
         dto.setId(manufacturer.getId());

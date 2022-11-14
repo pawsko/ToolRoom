@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class UserDtoRequest {
+class UserDtoRequest {
     @NotNull
     @Size(min = 3, message = "First name must contain minimum {min} signs")
     private String firstName;

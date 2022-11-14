@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,20 +30,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "Manufacturers")
 @RequestMapping("/api/manufacturer")
-public class ManufacturerController {
+class ManufacturerController {
     private final ManufacturerService manufacturerService;
-
-    public ManufacturerController(ManufacturerService manufacturerService) {
-        this.manufacturerService = manufacturerService;
-    }
 
     @GetMapping
     @Operation(description = "Get all manufacturers")
     @ApiResponse(responseCode = "200", description = "List of all manufacturers", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = ManufacturerDtoResponse.class)))})
-    public List<ManufacturerDtoResponse> getAllManufacturers() {
+    List<ManufacturerDtoResponse> getAllManufacturers() {
         return manufacturerService.getAllManufactures();
     }
 
@@ -54,7 +52,7 @@ public class ManufacturerController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ManufacturerDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Manufacturer with the given ID was not found", content = @Content)})
-    public ResponseEntity<ManufacturerDtoResponse> getManufacturerById(@PathVariable Long id) {
+    ResponseEntity<ManufacturerDtoResponse> getManufacturerById(@PathVariable Long id) {
         return manufacturerService.findManufacturerById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -66,19 +64,13 @@ public class ManufacturerController {
             description = "New location has added",
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = ManufacturerDtoRequest.class))})
-    @ResponseStatus(HttpStatus.CREATED)
+
     ResponseEntity<ManufacturerDtoResponse> saveManufacturer(@Valid @RequestBody ManufacturerDtoRequest manufacturerDtoRequest) {
         ManufacturerDtoResponse savedManufacturer = manufacturerService.saveManufacturer(manufacturerDtoRequest);
         URI savedManufacturerUri = UriHelper.getUri(savedManufacturer.getId());
         return ResponseEntity.created(savedManufacturerUri).body(savedManufacturer);
     }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-    }
+
     @PutMapping("/{id}")
     @Operation(description = "Edit specific manufacturer by id")
     @ApiResponses(value = {
@@ -90,5 +82,13 @@ public class ManufacturerController {
         return manufacturerService.replaceManufacturer(id, manufacturerDtoRequest)
                 .map(manufacturerDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 }

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class PowerTypeDtoRequest {
+class PowerTypeDtoRequest {
     @NotNull
     @Size(min = 3, message = "Power type name must contain minimum {min} signs")
     private String powerTypeName;

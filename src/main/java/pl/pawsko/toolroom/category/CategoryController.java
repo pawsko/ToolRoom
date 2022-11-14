@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,20 +30,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "Categories")
 @RequestMapping("api/category")
-public class CategoryController {
+class CategoryController {
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @GetMapping
     @Operation(description = "Get all categories")
     @ApiResponse(responseCode = "200", description = "List of all categories", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = CategoryDtoResponse.class)))})
-    public List<CategoryDtoResponse> getAllCategories() {
+    List<CategoryDtoResponse> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
@@ -66,18 +64,10 @@ public class CategoryController {
             description = "New category has added",
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = CategoryDtoRequest.class))})
-    @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<CategoryDtoResponse> saveCategory(@Valid @RequestBody CategoryDtoRequest categoryDtoRequest) {
         CategoryDtoResponse savedCategory = categoryService.saveCategory(categoryDtoRequest);
         URI savedCategoryUri = UriHelper.getUri(savedCategory.getId());
         return ResponseEntity.created(savedCategoryUri).body(savedCategory);
-    }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 
     @PutMapping("/{id}")
@@ -91,5 +81,13 @@ public class CategoryController {
         return categoryService.replaceCategory(id, categoryDtoRequest)
                 .map(categoryDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 }

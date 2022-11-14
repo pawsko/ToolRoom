@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,14 +30,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "Statuses")
 @RequestMapping("/api/status")
-public class StatusController {
+class StatusController {
     private final StatusService statusService;
-
-    public StatusController(StatusService statusService) {
-        this.statusService = statusService;
-    }
 
     @GetMapping
     @Operation(description = "Get all statuses")
@@ -72,13 +70,7 @@ public class StatusController {
         URI savedStatusUri = UriHelper.getUri(savedStatus.getId());
         return ResponseEntity.created(savedStatusUri).body(savedStatus);
     }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-    }
+
     @PutMapping("/{id}")
     @Operation(description = "Edit specific status by id")
     @ApiResponses(value = {
@@ -90,5 +82,13 @@ public class StatusController {
         return statusService.replaceStatus(id, statusDtoRequest)
                 .map(statusDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 }

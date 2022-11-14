@@ -1,5 +1,6 @@
 package pl.pawsko.toolroom.tool;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pawsko.toolroom.category.Category;
 import pl.pawsko.toolroom.category.CategoryRepository;
@@ -15,22 +16,14 @@ import pl.pawsko.toolroom.status.StatusRepository;
 import java.util.Optional;
 
 @Service
-public class ToolDtoMapper {
-
+@RequiredArgsConstructor
+class ToolDtoMapper {
 
     private final ManufacturerRepository manufacturerRepository;
     private final CategoryRepository categoryRepository;
     private final PowerTypeRepository powerTypeRepository;
     private final StatusRepository statusRepository;
     private final LocationRepository locationRepository;
-
-    public ToolDtoMapper(ManufacturerRepository manufacturerRepository, CategoryRepository categoryRepository, PowerTypeRepository powerTypeRepository, StatusRepository statusRepository, LocationRepository locationRepository) {
-        this.manufacturerRepository = manufacturerRepository;
-        this.categoryRepository = categoryRepository;
-        this.powerTypeRepository = powerTypeRepository;
-        this.statusRepository = statusRepository;
-        this.locationRepository = locationRepository;
-    }
 
     ToolDtoResponse map(Tool tool) {
         ToolDtoResponse dto = new ToolDtoResponse();

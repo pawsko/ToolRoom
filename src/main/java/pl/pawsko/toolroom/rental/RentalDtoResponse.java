@@ -8,7 +8,7 @@ import pl.pawsko.toolroom.user.User;
 import java.time.LocalDateTime;
 
 @Data
-public class RentalDtoResponse {
+class RentalDtoResponse {
     private Long id;
     private Tool tool;
     private User user;

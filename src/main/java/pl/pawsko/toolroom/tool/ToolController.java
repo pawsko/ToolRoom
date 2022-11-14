@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,21 +30,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "Tools")
 @RequestMapping("/api/tool")
-public class ToolController {
+class ToolController {
     private final ToolService toolService;
-
-    public ToolController(ToolService toolService) {
-        this.toolService = toolService;
-    }
-
 
     @GetMapping
     @Operation(description = "Get all tools")
     @ApiResponse(responseCode = "200", description = "List of all tools", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = ToolDtoResponse.class)))})
-    public List<ToolDtoResponse> getAllTools() {
+    List<ToolDtoResponse> getAllTools() {
         return toolService.getAllTools();
     }
 
@@ -55,7 +52,7 @@ public class ToolController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ToolDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Tool with the given ID was not found", content = @Content)})
-    public ResponseEntity<ToolDtoResponse> getToolById(@PathVariable Long id) {
+    ResponseEntity<ToolDtoResponse> getToolById(@PathVariable Long id) {
         return toolService.getToolById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -72,18 +69,10 @@ public class ToolController {
                     description = "New tool didn't create because of errors")
     })
 
-    @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<?> saveTool(@Valid @RequestBody ToolDtoRequest toolDtoRequest) {
         ToolDtoResponse savedTool = toolService.saveTool(toolDtoRequest);
         URI savedToolUri = UriHelper.getUri(savedTool.getId());
             return ResponseEntity.created(savedToolUri).body(savedTool);
-    }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 
     @PutMapping("/{id}")
@@ -97,6 +86,14 @@ public class ToolController {
         return toolService.replaceTool(id, toolDtoRequest)
                 .map(toolDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 }
 

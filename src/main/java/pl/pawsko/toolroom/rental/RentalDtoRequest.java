@@ -8,7 +8,7 @@ import pl.pawsko.toolroom.rental.validators.UserConstraint;
 import java.time.LocalDateTime;
 
 @Data
-public class RentalDtoRequest {
+class RentalDtoRequest {
     @ToolConstraint
     private Long toolId;
     @UserConstraint
