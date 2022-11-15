@@ -3,7 +3,7 @@ package pl.pawsko.toolroom.category;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CategoryDtoMapper {
+class CategoryDtoMapper {
     CategoryDtoResponse map(Category category) {
         CategoryDtoResponse dto = new CategoryDtoResponse();
         dto.setId(category.getId());

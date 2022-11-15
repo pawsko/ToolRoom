@@ -3,7 +3,7 @@ package pl.pawsko.toolroom.status;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StatusDtoMapper {
+class StatusDtoMapper {
     StatusDtoResponse map(Status status) {
         StatusDtoResponse dto = new StatusDtoResponse();
         dto.setId(status.getId());

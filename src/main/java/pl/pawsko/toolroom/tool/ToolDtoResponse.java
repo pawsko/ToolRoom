@@ -8,7 +8,7 @@ import pl.pawsko.toolroom.powertype.PowerType;
 import pl.pawsko.toolroom.status.Status;
 
 @Data
-public class ToolDtoResponse {
+class ToolDtoResponse {
     private Long id;
     private String name;
     private String model;

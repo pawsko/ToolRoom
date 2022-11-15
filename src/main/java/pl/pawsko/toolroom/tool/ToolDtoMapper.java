@@ -1,14 +1,30 @@
 package pl.pawsko.toolroom.tool;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pawsko.toolroom.category.Category;
+import pl.pawsko.toolroom.category.CategoryRepository;
 import pl.pawsko.toolroom.location.Location;
+import pl.pawsko.toolroom.location.LocationRepository;
 import pl.pawsko.toolroom.manufacturer.Manufacturer;
+import pl.pawsko.toolroom.manufacturer.ManufacturerRepository;
 import pl.pawsko.toolroom.powertype.PowerType;
+import pl.pawsko.toolroom.powertype.PowerTypeRepository;
 import pl.pawsko.toolroom.status.Status;
+import pl.pawsko.toolroom.status.StatusRepository;
+
+import java.util.Optional;
 
 @Service
-public class ToolDtoMapper {
+@RequiredArgsConstructor
+class ToolDtoMapper {
+
+    private final ManufacturerRepository manufacturerRepository;
+    private final CategoryRepository categoryRepository;
+    private final PowerTypeRepository powerTypeRepository;
+    private final StatusRepository statusRepository;
+    private final LocationRepository locationRepository;
+
     ToolDtoResponse map(Tool tool) {
         ToolDtoResponse dto = new ToolDtoResponse();
         dto.setId(tool.getId());
@@ -26,22 +42,17 @@ public class ToolDtoMapper {
         Tool tool = new Tool();
         tool.setName(toolDtoRequest.getName());
         tool.setModel(toolDtoRequest.getModel());
-        Manufacturer manufacturer = new Manufacturer();
-        manufacturer.setId(toolDtoRequest.getManufacturerId());
-        tool.setManufacturer(manufacturer);
-        Category category = new Category();
-        category.setId(toolDtoRequest.getCategoryId());
-        tool.setCategory(category);
-        PowerType powerType = new PowerType();
-        powerType.setId(toolDtoRequest.getPowerTypeId());
-        tool.setPowerType(powerType);
-        Status status = new Status();
-        status.setId(toolDtoRequest.getStatusId());
-        tool.setStatus(status);
+        Optional<Manufacturer> manufacturer = manufacturerRepository.findById(toolDtoRequest.getManufacturerId());
+        manufacturer.ifPresent(tool::setManufacturer);
+        Optional<Category> category = categoryRepository.findById(toolDtoRequest.getCategoryId());
+        category.ifPresent(tool::setCategory);
+        Optional<PowerType> powerType = powerTypeRepository.findById(toolDtoRequest.getPowerTypeId());
+        powerType.ifPresent(tool::setPowerType);
+        Optional<Status> status = statusRepository.findById(toolDtoRequest.getStatusId());
+        status.ifPresent(tool::setStatus);
         tool.setRating(toolDtoRequest.getRating());
-        Location location = new Location();
-        location.setId(toolDtoRequest.getLocationId());
-        tool.setLocation(location);
+        Optional<Location> location = locationRepository.findById(toolDtoRequest.getLocationId());
+        location.ifPresent(tool::setLocation);
         return tool;
     }
 

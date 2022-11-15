@@ -3,7 +3,7 @@ package pl.pawsko.toolroom.location;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LocationDtoMapper {
+class LocationDtoMapper {
     LocationDtoResponse map(Location location) {
         LocationDtoResponse dto = new LocationDtoResponse();
         dto.setId(location.getId());
