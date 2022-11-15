@@ -64,7 +64,7 @@ class StatusController {
             description = "New status has added",
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = StatusDtoRequest.class))})
-    @ResponseStatus(HttpStatus.CREATED)
+
     ResponseEntity<StatusDtoResponse> save(@Valid @RequestBody StatusDtoRequest statusDtoRequest) {
         StatusDtoResponse savedStatus = statusService.saveStatus(statusDtoRequest);
         URI savedStatusUri = UriHelper.getUri(savedStatus.getId());
