@@ -7,6 +7,10 @@ spring:
     url: jdbc:mysql://localhost:3306/tools
     username: root
     password: coderslab
+  security:
+    user:
+      name: admin
+      password: admin
 springdoc:
   swagger-ui:
     default-models-expand-depth: -1
