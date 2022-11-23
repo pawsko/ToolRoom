@@ -1,3 +1,8 @@
+pl:
+  pawsko:
+    toolroom:
+      database: mysql
+
 spring:
   jpa:
     hibernate:
@@ -11,6 +16,13 @@ spring:
     user:
       name: admin
       password: admin
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: ToolRoom
+      repositories:
+        type: auto
 springdoc:
   swagger-ui:
     default-models-expand-depth: -1
