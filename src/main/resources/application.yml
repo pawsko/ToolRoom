@@ -1,3 +1,13 @@
+logging:
+  level:
+    root: ERROR
+    pl:
+      pawsko:
+        toolroom: DEBUG
+  file:
+    name: ToolRoomApp.log
+    path: \
+
 spring:
   jpa:
     hibernate:

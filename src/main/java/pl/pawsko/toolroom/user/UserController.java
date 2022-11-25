@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Users")
 @RequestMapping("/api/user")
 class UserController {
@@ -42,6 +44,7 @@ class UserController {
     @ApiResponse(responseCode = "200", description = "List of all users", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = UserDtoResponse.class)))})
     List<UserDtoResponse> getAllUsers() {
+        log.debug("Getting all users");
         return userService.getAllUsers();
     }
 
@@ -54,6 +57,7 @@ class UserController {
                             schema = @Schema(implementation = UserDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "User with the given ID was not found", content = @Content)})
     ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
+        log.debug("Getting user by id={}", id);
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -68,6 +72,7 @@ class UserController {
     ResponseEntity<UserDtoResponse> saveUser(@Valid @RequestBody UserDtoRequest userDtoRequest) {
         UserDtoResponse savedUser = userService.saveUser(userDtoRequest);
         URI savedUserUri = UriHelper.getUri(savedUser.getId());
+        log.debug("Saved new user {}", savedUser);
         return ResponseEntity.created(savedUserUri).body(savedUser);
     }
 
@@ -79,6 +84,7 @@ class UserController {
             @ApiResponse(responseCode = "404", description = "User with the given ID was not found",
                     content = @Content)})
     ResponseEntity<?> replaceUser(@PathVariable Long id, @Valid@RequestBody UserDtoRequest userDtoRequest) {
+        log.debug("Replaced user id={}", id);
         return userService.replaceUser(id, userDtoRequest)
                 .map(userDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
@@ -87,6 +93,7 @@ class UserController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.debug("Bad request 400");
         return ex.getBindingResult().getFieldErrors()
                 .stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));

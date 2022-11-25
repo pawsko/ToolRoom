@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Categories")
 @RequestMapping("api/category")
 class CategoryController {
@@ -41,6 +43,7 @@ class CategoryController {
     @ApiResponse(responseCode = "200", description = "List of all categories", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = CategoryDtoResponse.class)))})
     List<CategoryDtoResponse> getAllCategories() {
+        log.debug("Getting all categories");
         return categoryService.getAllCategories();
     }
 
@@ -53,6 +56,7 @@ class CategoryController {
                             schema = @Schema(implementation = CategoryDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Category with the given ID was not found", content = @Content)})
     ResponseEntity<CategoryDtoResponse> getCategotyById(@PathVariable Long id) {
+        log.debug("Getting category by id={}", id);
         return categoryService.getCategoryById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -67,6 +71,7 @@ class CategoryController {
     ResponseEntity<CategoryDtoResponse> saveCategory(@Valid @RequestBody CategoryDtoRequest categoryDtoRequest) {
         CategoryDtoResponse savedCategory = categoryService.saveCategory(categoryDtoRequest);
         URI savedCategoryUri = UriHelper.getUri(savedCategory.getId());
+        log.debug("Saved new category {}", savedCategory);
         return ResponseEntity.created(savedCategoryUri).body(savedCategory);
     }
 
@@ -78,6 +83,7 @@ class CategoryController {
             @ApiResponse(responseCode = "404", description = "Category with the given ID was not found",
                     content = @Content)})
     ResponseEntity<?> replaceCategory(@PathVariable Long id, @Valid @RequestBody CategoryDtoRequest categoryDtoRequest) {
+        log.debug("Replaced category id={}", id);
         return categoryService.replaceCategory(id, categoryDtoRequest)
                 .map(categoryDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
@@ -86,6 +92,7 @@ class CategoryController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.debug("Bad request 400");
         return ex.getBindingResult().getFieldErrors()
                 .stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));

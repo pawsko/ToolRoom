@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Tools")
 @RequestMapping("/api/tool")
 class ToolController {
@@ -41,6 +43,7 @@ class ToolController {
     @ApiResponse(responseCode = "200", description = "List of all tools", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = ToolDtoResponse.class)))})
     List<ToolDtoResponse> getAllTools() {
+        log.debug("Getting all tools");
         return toolService.getAllTools();
     }
 
@@ -53,6 +56,7 @@ class ToolController {
                             schema = @Schema(implementation = ToolDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Tool with the given ID was not found", content = @Content)})
     ResponseEntity<ToolDtoResponse> getToolById(@PathVariable Long id) {
+        log.debug("Getting tool by id={}", id);
         return toolService.getToolById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -72,7 +76,8 @@ class ToolController {
     ResponseEntity<?> saveTool(@Valid @RequestBody ToolDtoRequest toolDtoRequest) {
         ToolDtoResponse savedTool = toolService.saveTool(toolDtoRequest);
         URI savedToolUri = UriHelper.getUri(savedTool.getId());
-            return ResponseEntity.created(savedToolUri).body(savedTool);
+        log.debug("Saved new tool {}", savedTool);
+        return ResponseEntity.created(savedToolUri).body(savedTool);
     }
 
     @PutMapping("/{id}")
@@ -83,6 +88,7 @@ class ToolController {
             @ApiResponse(responseCode = "404", description = "Tool with the given ID was not found",
                     content = @Content)})
     ResponseEntity<?> replaceTool(@PathVariable Long id, @Valid @RequestBody ToolDtoRequest toolDtoRequest) {
+        log.debug("Replaced tool id={}", id);
         return toolService.replaceTool(id, toolDtoRequest)
                 .map(toolDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
@@ -91,6 +97,7 @@ class ToolController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.debug("Bad request 400");
         return ex.getBindingResult().getFieldErrors()
                 .stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));

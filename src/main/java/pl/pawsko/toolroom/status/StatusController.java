@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Statuses")
 @RequestMapping("/api/status")
 class StatusController {
@@ -41,6 +43,7 @@ class StatusController {
     @ApiResponse(responseCode = "200", description = "List of all statuses", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = StatusDtoResponse.class)))})
     List<StatusDtoResponse> getAllStatuses() {
+        log.debug("Getting all statuses");
         return statusService.getAllStatuses();
     }
 
@@ -53,6 +56,7 @@ class StatusController {
                             schema = @Schema(implementation = StatusDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Status with the given ID was not found", content = @Content)})
     ResponseEntity<StatusDtoResponse> getStatusById(@PathVariable Long id) {
+        log.debug("Getting status by id={}", id);
         return statusService.getStatusById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -68,6 +72,7 @@ class StatusController {
     ResponseEntity<StatusDtoResponse> save(@Valid @RequestBody StatusDtoRequest statusDtoRequest) {
         StatusDtoResponse savedStatus = statusService.saveStatus(statusDtoRequest);
         URI savedStatusUri = UriHelper.getUri(savedStatus.getId());
+        log.debug("Saved new status {}", savedStatus);
         return ResponseEntity.created(savedStatusUri).body(savedStatus);
     }
 
@@ -79,6 +84,7 @@ class StatusController {
             @ApiResponse(responseCode = "404", description = "Status with the given ID was not found",
                     content = @Content)})
     ResponseEntity<?> replaceStatus(@PathVariable Long id, @Valid @RequestBody StatusDtoRequest statusDtoRequest) {
+        log.debug("Replaced status id={}", id);
         return statusService.replaceStatus(id, statusDtoRequest)
                 .map(statusDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
@@ -87,6 +93,7 @@ class StatusController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.debug("Bad request 400");
         return ex.getBindingResult().getFieldErrors()
                 .stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));

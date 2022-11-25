@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Locations")
 @RequestMapping("/api/location")
 class LocationController {
@@ -41,6 +43,7 @@ class LocationController {
     @ApiResponse(responseCode = "200", description = "List of all locations", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = LocationDtoResponse.class)))})
     List<LocationDtoResponse> getAllLocations() {
+        log.debug("Getting all locations");
         return locationService.getAllLocations();
     }
 
@@ -53,6 +56,7 @@ class LocationController {
                             schema = @Schema(implementation = LocationDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Location with the given ID was not found", content = @Content)})
     ResponseEntity<LocationDtoResponse> getLocationById(@PathVariable Long id) {
+        log.debug("Getting location by id={}", id);
         return locationService.getLocationById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -67,6 +71,7 @@ class LocationController {
     ResponseEntity<LocationDtoResponse> saveCategory(@Valid @RequestBody LocationDtoRequest locationDtoRequest) {
         LocationDtoResponse savedLocation = locationService.saveLocation(locationDtoRequest);
         URI savedLocationUri = UriHelper.getUri(savedLocation.getId());
+        log.debug("Saved new location {}", savedLocation);
         return ResponseEntity.created(savedLocationUri).body(savedLocation);
     }
 
@@ -78,6 +83,7 @@ class LocationController {
             @ApiResponse(responseCode = "404", description = "Location with the given ID was not found",
                     content = @Content)})
     ResponseEntity<?> replaceCategory(@PathVariable Long id, @Valid @RequestBody LocationDtoRequest locationDtoRequest) {
+        log.debug("Replaced location id={}", id);
         return locationService.replaceLocation(id, locationDtoRequest)
                 .map(locationDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
@@ -86,6 +92,7 @@ class LocationController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.debug("Bad request 400");
         return ex.getBindingResult().getFieldErrors()
                 .stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));

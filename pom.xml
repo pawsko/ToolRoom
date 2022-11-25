@@ -66,6 +66,7 @@
             <plugin>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <version>1.4</version>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

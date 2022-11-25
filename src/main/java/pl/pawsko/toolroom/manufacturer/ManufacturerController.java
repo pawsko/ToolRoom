@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Manufacturers")
 @RequestMapping("/api/manufacturer")
 class ManufacturerController {
@@ -41,6 +43,7 @@ class ManufacturerController {
     @ApiResponse(responseCode = "200", description = "List of all manufacturers", content = {@Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = ManufacturerDtoResponse.class)))})
     List<ManufacturerDtoResponse> getAllManufacturers() {
+        log.debug("Getting all manufactures");
         return manufacturerService.getAllManufactures();
     }
 
@@ -53,6 +56,7 @@ class ManufacturerController {
                             schema = @Schema(implementation = ManufacturerDtoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Manufacturer with the given ID was not found", content = @Content)})
     ResponseEntity<ManufacturerDtoResponse> getManufacturerById(@PathVariable Long id) {
+        log.debug("Getting manufacturer by id={}", id);
         return manufacturerService.findManufacturerById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -68,6 +72,7 @@ class ManufacturerController {
     ResponseEntity<ManufacturerDtoResponse> saveManufacturer(@Valid @RequestBody ManufacturerDtoRequest manufacturerDtoRequest) {
         ManufacturerDtoResponse savedManufacturer = manufacturerService.saveManufacturer(manufacturerDtoRequest);
         URI savedManufacturerUri = UriHelper.getUri(savedManufacturer.getId());
+        log.debug("Saved new manufacturer {}", savedManufacturer);
         return ResponseEntity.created(savedManufacturerUri).body(savedManufacturer);
     }
 
@@ -79,6 +84,7 @@ class ManufacturerController {
             @ApiResponse(responseCode = "404", description = "Manufacturer with the given ID was not found",
                     content = @Content)})
     ResponseEntity<?> replaceManufacturer(@PathVariable Long id, @Valid @RequestBody ManufacturerDtoRequest manufacturerDtoRequest) {
+        log.debug("Replaced manufacturer id={}", id);
         return manufacturerService.replaceManufacturer(id, manufacturerDtoRequest)
                 .map(manufacturerDtoResponse -> ResponseEntity.noContent().build())
                 .orElse(ResponseEntity.notFound().build());
@@ -87,6 +93,7 @@ class ManufacturerController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.debug("Bad request 400");
         return ex.getBindingResult().getFieldErrors()
                 .stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
