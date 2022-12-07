@@ -10,6 +10,7 @@ import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
+public
 class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryDtoMapper categoryDtoMapper;

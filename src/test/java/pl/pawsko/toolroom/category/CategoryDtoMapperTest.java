@@ -2,16 +2,15 @@ package pl.pawsko.toolroom.category;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class CategoryDtoMapperTest {
 
-
-
     @Test
     void testMapFromCategoryToCategoryDtoResponse() {
-
         CategoryDtoMapper categoryDtoMapper = new CategoryDtoMapper();
+
         Category category = new Category();
         category.setId(1234L);
         category.setCategoryName("AnyCategory");
@@ -25,6 +24,7 @@ class CategoryDtoMapperTest {
     @Test
     void testMapFromCategoryDtoRequestToCategory() {
         CategoryDtoMapper categoryDtoMapper = new CategoryDtoMapper();
+
         CategoryDtoRequest categoryDtoRequest = new CategoryDtoRequest();
         categoryDtoRequest.setCategoryName("RequestCategory");
         Category mapped = categoryDtoMapper.map(categoryDtoRequest);

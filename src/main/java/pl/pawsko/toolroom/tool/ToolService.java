@@ -35,10 +35,10 @@ class ToolService {
         if (!toolRepository.existsById(id)) {
             return Optional.empty();
         } else {
-            Optional<Tool> byId = toolRepository.findById(id);
+            Optional<Tool> toolRepositoryById = toolRepository.findById(id);
             Tool toolToUpdate = toolDtoMapper.map(toolDtoRequest);
             toolToUpdate.setId(id);
-            toolToUpdate.setCreated(byId.orElseThrow().getCreated());
+            toolRepositoryById.ifPresent(tool -> toolToUpdate.setCreated(tool.getCreated()));
             Tool updatedEntity = toolRepository.save(toolToUpdate);
             return Optional.of(toolDtoMapper.map(updatedEntity));
         }
