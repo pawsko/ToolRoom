@@ -1,6 +1,8 @@
 package pl.pawsko.toolroom.rental;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.pawsko.toolroom.tool.Tool;
 import pl.pawsko.toolroom.user.User;
@@ -20,6 +22,8 @@ import java.time.temporal.ChronoUnit;
 @Entity
 @Table(name = "rentals")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Rental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

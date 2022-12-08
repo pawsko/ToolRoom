@@ -80,7 +80,6 @@ class ToolControllerTest {
 
     @BeforeEach
     void setup() {
-        System.out.println("Test Before each");
         Manufacturer manufacturer1 = new Manufacturer();
         manufacturer1.setId(1L);
         manufacturer1.setManufacturerName("Makita");

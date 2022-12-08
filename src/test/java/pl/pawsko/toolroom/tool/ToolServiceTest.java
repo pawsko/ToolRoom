@@ -33,10 +33,8 @@ class ToolServiceTest {
 
     @Mock
     private ToolRepository toolRepository;
-
     @Mock
     private ToolDtoMapper toolDtoMapper;
-
     @InjectMocks
     private ToolService toolService;
 

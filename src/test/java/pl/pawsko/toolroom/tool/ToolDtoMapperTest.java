@@ -33,24 +33,18 @@ class ToolDtoMapperTest {
     static PowerType powerType = new PowerType();
     static Status status = new Status();
     static Location location = new Location();
-
     static User user;
 
     @Mock
     ManufacturerRepository manufacturerRepository;
-
     @Mock
     CategoryRepository categoryRepository;
-
     @Mock
     PowerTypeRepository powerTypeRepository;
-
     @Mock
     StatusRepository statusRepository;
-
     @Mock
     LocationRepository locationRepository;
-
     @InjectMocks
     ToolDtoMapper toolDtoMapper;
 
@@ -89,6 +83,7 @@ class ToolDtoMapperTest {
         assertEquals(mapped.getPowerType().getPowerTypeName(), tool.getPowerType().getPowerTypeName());
         assertEquals(mapped.getStatus().getStatusName(), tool.getStatus().getStatusName());
         assertEquals(mapped.getLocation().getLocationName(), tool.getLocation().getLocationName());
+
         assertNotEquals(mapped.getName(), "anyTool");
         assertNotEquals(mapped.getId(), 4321L);
     }
@@ -97,6 +92,7 @@ class ToolDtoMapperTest {
     void testMapFromToolDtoRequestToTool() {
         ToolDtoRequest toolDtoRequest = new ToolDtoRequest("Cutter", "Makita", 1L,
                 20L, 300L, 4000L, 10, 50000L);
+
         given(manufacturerRepository.findById(toolDtoRequest.getManufacturerId()))
                 .willReturn(Optional.ofNullable(manufacturer));
         given(categoryRepository.findById(toolDtoRequest.getCategoryId()))
@@ -117,6 +113,7 @@ class ToolDtoMapperTest {
         assertEquals(mapped.getStatus().getId(), toolDtoRequest.getStatusId());
         assertEquals(mapped.getRating(), toolDtoRequest.getRating());
         assertEquals(mapped.getLocation().getId(), toolDtoRequest.getLocationId());
+
         assertNotEquals(mapped.getName(), "anyTool");
     }
 }
