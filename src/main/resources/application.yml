@@ -1,7 +1,8 @@
+# there are 2 db types: mysql or mongodb
 pl:
   pawsko:
     toolroom:
-      database: mysql
+      database: mongodb
 
 spring:
   jpa:
@@ -21,8 +22,6 @@ spring:
       host: localhost
       port: 27017
       database: ToolRoom
-      repositories:
-        type: auto
 springdoc:
   swagger-ui:
     default-models-expand-depth: -1

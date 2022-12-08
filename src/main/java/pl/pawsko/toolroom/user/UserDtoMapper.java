@@ -34,4 +34,14 @@ class UserDtoMapper {
         dto.setPhoneNumber(userNoSql.getPhoneNumber());
         return dto;
     }
+
+    UserNoSql mapToNoSql(UserDtoRequest userDtoRequest) {
+        UserNoSql user = new UserNoSql();
+        user.setFirstName(userDtoRequest.getFirstName());
+        user.setLastName(userDtoRequest.getLastName());
+        user.setEmail(userDtoRequest.getEmail());
+        user.setPhoneNumber(userDtoRequest.getPhoneNumber());
+        user.setRating(userDtoRequest.getRating());
+        return user;
+    }
 }
