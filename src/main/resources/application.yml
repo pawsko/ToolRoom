@@ -1,3 +1,9 @@
+# there are 2 db types: mysql or mongodb
+pl:
+  pawsko:
+    toolroom:
+      database: mongodb
+
 spring:
   jpa:
     hibernate:
@@ -11,6 +17,11 @@ spring:
     user:
       name: admin
       password: admin
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: ToolRoom
 springdoc:
   swagger-ui:
     default-models-expand-depth: -1

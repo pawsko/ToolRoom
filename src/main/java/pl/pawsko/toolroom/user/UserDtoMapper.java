@@ -1,6 +1,7 @@
 package pl.pawsko.toolroom.user;
 
 import org.springframework.stereotype.Service;
+import pl.pawsko.toolroom.user.nosql.UserNoSql;
 
 @Service
 class UserDtoMapper {
@@ -16,6 +17,26 @@ class UserDtoMapper {
 
     User map(UserDtoRequest userDtoRequest) {
         User user = new User();
+        user.setFirstName(userDtoRequest.getFirstName());
+        user.setLastName(userDtoRequest.getLastName());
+        user.setEmail(userDtoRequest.getEmail());
+        user.setPhoneNumber(userDtoRequest.getPhoneNumber());
+        user.setRating(userDtoRequest.getRating());
+        return user;
+    }
+
+    UserDtoResponse mapFromNoSql(UserNoSql userNoSql) {
+        UserDtoResponse dto = new UserDtoResponse();
+        dto.setId(userNoSql.getId());
+        dto.setFirstName(userNoSql.getFirstName());
+        dto.setLastName(userNoSql.getLastName());
+        dto.setEmail(userNoSql.getEmail());
+        dto.setPhoneNumber(userNoSql.getPhoneNumber());
+        return dto;
+    }
+
+    UserNoSql mapToNoSql(UserDtoRequest userDtoRequest) {
+        UserNoSql user = new UserNoSql();
         user.setFirstName(userDtoRequest.getFirstName());
         user.setLastName(userDtoRequest.getLastName());
         user.setEmail(userDtoRequest.getEmail());
