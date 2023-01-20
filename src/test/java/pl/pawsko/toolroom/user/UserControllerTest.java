@@ -1,6 +1,7 @@
 package pl.pawsko.toolroom.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,16 +39,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserControllerTest {
 
-    User user1 = new User(1L, "Pawel", "Skora", "123456789",
-            "pawel@email.org", 10, null, null);
-    User user2 = new User(2L, "Adam", "Mickiewicz", "123123123",
-            "am@email.com", 1, null, null);
-    UserDtoResponse userRes1 = new UserDtoResponse(1L, "Pawel", "Skora", "123456789",
-            "pawel@email.org");
-    UserDtoResponse userRes2 = new UserDtoResponse(2L, "Adam", "Mickiewicz", "123123123",
-            "am@email.com");
-    UserDtoRequest userReq1 = new UserDtoRequest("Pawel", "Skora", "123456789",
-            "pawel@email.org", 10);
+    private static User user1;
+    private static User user2;
+    private static UserDtoResponse userRes1;
+    private static UserDtoResponse userRes2;
+    private static UserDtoRequest userReq1;
 
     @Autowired
     private MockMvc mockMvc;
@@ -57,6 +53,19 @@ class UserControllerTest {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    @BeforeEach
+    void setup() {
+        user1 = new User(1L, "Pawel", "Skora", "123456789",
+                "pawel@email.org", 10, null, null);
+        user2 = new User(2L, "Adam", "Mickiewicz", "123123123",
+                "am@email.com", 1, null, null);
+        userRes1 = new UserDtoResponse(1L, "Pawel", "Skora", "123456789",
+                "pawel@email.org");
+        userRes2 = new UserDtoResponse(2L, "Adam", "Mickiewicz", "123123123",
+                "am@email.com");
+        userReq1 = new UserDtoRequest("Pawel", "Skora", "123456789",
+                "pawel@email.org", 10);
+    }
     @Test
     void whenGetAllUsers_thenReturnJsonArray() throws Exception {
 

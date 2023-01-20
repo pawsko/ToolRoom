@@ -119,13 +119,14 @@ class RentalControllerTest {
                 LocalDateTime.of(2020, 1, 10, 10, 10, 12),
                 LocalDateTime.of(2020, 2, 10, 15, 39, 13),
                 "Not OK");
+
+        mapper.findAndRegisterModules();
     }
 
     @Test
     void whenGetAllRentals_thenReturnJsonArray() throws Exception {
         List<RentalDtoResponse> allRentals = Arrays.asList(rentalRes1, rentalRes2);
         given(rentalService.getAllRentals()).willReturn(allRentals);
-        System.out.println(rentalRes1.getRented());
         mockMvc.perform(get("/api/rental")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -179,7 +180,6 @@ class RentalControllerTest {
         given(rentalRepository.existsById(anyLong())).willReturn(true);
         given(toolRepository.existsById(anyLong())).willReturn(true);
         given(userRepository.existsById(anyLong())).willReturn(true);
-        mapper.findAndRegisterModules();
 
         try {
             mockMvc.perform(post("/api/rental")
@@ -203,8 +203,6 @@ class RentalControllerTest {
         given(toolRepository.existsById(anyLong())).willReturn(true);
         given(userRepository.existsById(anyLong())).willReturn(true);
 
-        mapper.findAndRegisterModules();
-
         mockMvc.perform(put("/api/rental/{id}", 100L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(rentalReq1)))
@@ -220,8 +218,6 @@ class RentalControllerTest {
         given(rentalRepository.existsById(anyLong())).willReturn(true);
         given(toolRepository.existsById(anyLong())).willReturn(true);
         given(userRepository.existsById(anyLong())).willReturn(true);
-
-        mapper.findAndRegisterModules();
 
         mockMvc.perform(put("/api/rental/{id}", 100L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -239,7 +235,6 @@ class RentalControllerTest {
         given(toolRepository.existsById(anyLong())).willReturn(false);
         given(userRepository.existsById(anyLong())).willReturn(true);
 
-        mapper.findAndRegisterModules();
         mockMvc.perform(put("/api/rental/{id}", 100L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(rentalReq1)))
@@ -257,7 +252,6 @@ class RentalControllerTest {
         given(toolRepository.existsById(anyLong())).willReturn(true);
         given(userRepository.existsById(anyLong())).willReturn(false);
 
-        mapper.findAndRegisterModules();
         mockMvc.perform(put("/api/rental/{id}", 100L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(rentalReq1)))

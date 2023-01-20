@@ -7,11 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class CategoryDtoMapperTest {
 
+    Category category = new Category();
+    CategoryDtoMapper categoryDtoMapper = new CategoryDtoMapper();
+    CategoryDtoRequest categoryDtoRequest = new CategoryDtoRequest();
+
     @Test
     void testMapFromCategoryToCategoryDtoResponse() {
-        CategoryDtoMapper categoryDtoMapper = new CategoryDtoMapper();
-
-        Category category = new Category();
         category.setId(1234L);
         category.setCategoryName("AnyCategory");
         CategoryDtoResponse mapped = categoryDtoMapper.map(category);
@@ -23,9 +24,6 @@ class CategoryDtoMapperTest {
 
     @Test
     void testMapFromCategoryDtoRequestToCategory() {
-        CategoryDtoMapper categoryDtoMapper = new CategoryDtoMapper();
-
-        CategoryDtoRequest categoryDtoRequest = new CategoryDtoRequest();
         categoryDtoRequest.setCategoryName("RequestCategory");
         Category mapped = categoryDtoMapper.map(categoryDtoRequest);
         assertEquals(mapped.getCategoryName(), categoryDtoRequest.getCategoryName());

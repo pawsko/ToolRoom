@@ -99,7 +99,9 @@ class RentalServiceTest {
         given(rentalRepository.findAll()).willReturn(categories);
         given(rentalDtoMapper.map(rental1)).willReturn(rentalRes1);
         given(rentalDtoMapper.map(rental2)).willReturn(rentalRes2);
+
         List<RentalDtoResponse> allRentalsActual = rentalService.getAllRentals();
+
         assertNotEquals(categoriesDtoRes.get(0), allRentalsActual.get(1));
         assertIterableEquals(categoriesDtoRes, allRentalsActual);
         verify(rentalRepository).findAll();
@@ -111,7 +113,9 @@ class RentalServiceTest {
     void shouldReturnOneRental() {
         given(rentalRepository.findById(1L)).willReturn(Optional.of(rental1));
         given(rentalDtoMapper.map(rental1)).willReturn(rentalRes1);
+
         Optional<RentalDtoResponse> rentalByIdActual = rentalService.getRentalById(1L);
+
         assertEquals(Optional.of(rentalRes1), rentalByIdActual);
         assertNotEquals(Optional.of(rentalRes2), rentalByIdActual);
         verify(rentalRepository).findById(1L);
@@ -123,7 +127,9 @@ class RentalServiceTest {
         given(rentalDtoMapper.map(rentalReq1)).willReturn(rental1);
         given(rentalRepository.save(rental1)).willReturn(rental1);
         given((rentalDtoMapper.map(rental1))).willReturn(rentalRes1);
+
         RentalDtoResponse rentalDtoResponseActual = rentalService.saveRental(rentalReq1);
+
         assertEquals(rentalRes1, rentalDtoResponseActual);
         assertNotEquals(rentalRes2, rentalDtoResponseActual);
         verify(rentalRepository).save(rental1);
@@ -137,9 +143,10 @@ class RentalServiceTest {
         given(rentalRepository.save(rental1)).willReturn(rental1);
         given(rentalDtoMapper.map(rental1)).willReturn(rentalRes1);
         given(rentalRepository.existsById(1L)).willReturn(true);
-        Optional<RentalDtoResponse> rentalDtoResponseActual = rentalService.replaceRental(1L, rentalReq1);
-        assertEquals(Optional.of(rentalRes1), rentalDtoResponseActual);
 
+        Optional<RentalDtoResponse> rentalDtoResponseActual = rentalService.replaceRental(1L, rentalReq1);
+
+        assertEquals(Optional.of(rentalRes1), rentalDtoResponseActual);
         verify(rentalRepository).save(rental1);
         verify(rentalDtoMapper).map(rental1);
         verify(rentalDtoMapper).map(rentalReq1);
@@ -148,7 +155,9 @@ class RentalServiceTest {
     @Test
     void shouldReplaceEmptyOptionalWhenIdDoesNotExists() {
         given(rentalRepository.existsById(3L)).willReturn(false);
+
         Optional<RentalDtoResponse> rentalDtoResponseActual = rentalService.replaceRental(3L, rentalReq1);
+
         assertEquals(Optional.empty(), rentalDtoResponseActual);
     }
 }

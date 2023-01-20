@@ -33,6 +33,15 @@ class RentalDtoMapperTest {
     static User user;
     static Tool tool;
 
+    RentalDtoRequest rentalDtoRequest = new RentalDtoRequest(1L, 1L,
+            LocalDateTime.of(2020, 11, 15, 12, 34),
+            LocalDateTime.of(2020, 12, 15, 17, 4),
+            "OK");
+
+    Rental rental = new Rental(1L,
+            LocalDateTime.of(2020, 1, 10, 10, 10),
+            LocalDateTime.of(2020, 2, 10, 15, 39),
+            "OK", user, tool);
     @Mock
     public UserRepository userRepository;
     @Mock
@@ -70,10 +79,6 @@ class RentalDtoMapperTest {
 
     @Test
     void testMapFromRentalToRentalDtoResponse() {
-        Rental rental = new Rental(1L,
-                LocalDateTime.of(2020, 1, 10, 10, 10),
-                LocalDateTime.of(2020, 2, 10, 15, 39),
-                "OK", user, tool);
         RentalDtoResponse mapped = rentalDtoMapper.map(rental);
 
         assertEquals(mapped.getId(), rental.getId());
@@ -89,17 +94,13 @@ class RentalDtoMapperTest {
 
     @Test
     void testMapFromRentalDtoRequestToRental() {
-        RentalDtoRequest rentalDtoRequest = new RentalDtoRequest(1L, 1L,
-                LocalDateTime.of(2020, 11, 15, 12, 34),
-                LocalDateTime.of(2020, 12, 15, 17, 4),
-                "OK");
-
         given(userRepository.findById(rentalDtoRequest.getUserId()))
                 .willReturn(Optional.ofNullable(user));
         given(toolRepository.findById(rentalDtoRequest.getToolId()))
                 .willReturn(Optional.ofNullable(tool));
 
         Rental mapped = rentalDtoMapper.map(rentalDtoRequest);
+
         assertEquals(mapped.getRented(), rentalDtoRequest.getRented());
         assertEquals(mapped.getReturned(), rentalDtoRequest.getReturned());
         assertEquals(mapped.getNotices(), rentalDtoRequest.getNotices());

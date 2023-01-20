@@ -1,6 +1,7 @@
 package pl.pawsko.toolroom.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,6 +41,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class CategoryControllerTest {
 
+    private static CategoryDtoResponse categoryRes1;
+    private static CategoryDtoResponse categoryRes2;
+    private static CategoryDtoRequest categoryReq1;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -48,14 +53,19 @@ class CategoryControllerTest {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    @BeforeEach
+    void setup() {
+        categoryRes1 = new CategoryDtoResponse();
+        categoryRes2 = new CategoryDtoResponse();
+        categoryRes1.setCategoryName("Castorama");
+        categoryRes2.setCategoryName("Obi");
+        categoryReq1 = new CategoryDtoRequest();
+        categoryReq1.setCategoryName("Castorama");
+    }
 
     @Test
     void whenGetAllCategories_thenReturnJsonArray() throws Exception {
-        CategoryDtoResponse category1 = new CategoryDtoResponse();
-        CategoryDtoResponse category2 = new CategoryDtoResponse();
-        category1.setCategoryName("Castorama");
-        category2.setCategoryName("Obi");
-        List<CategoryDtoResponse> allCategories = Arrays.asList(category1, category2);
+        List<CategoryDtoResponse> allCategories = Arrays.asList(categoryRes1, categoryRes2);
 
         given(categoryService.getAllCategories()).willReturn(allCategories);
 
@@ -64,25 +74,22 @@ class CategoryControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].categoryName", is(category1.getCategoryName())))
-                .andExpect(jsonPath("$[1].categoryName", is(category2.getCategoryName())));
+                .andExpect(jsonPath("$[0].categoryName", is(categoryRes1.getCategoryName())))
+                .andExpect(jsonPath("$[1].categoryName", is(categoryRes2.getCategoryName())));
 
         verify(categoryService).getAllCategories();
     }
 
     @Test
     void whenGetCategoryById_thenReturnValidRequest() throws Exception {
-        CategoryDtoResponse categoryRes = new CategoryDtoResponse();
-        categoryRes.setId(1L);
-        categoryRes.setCategoryName("Castorama");
-
-        given(categoryService.getCategoryById(anyLong())).willReturn(Optional.of(categoryRes));
+        categoryRes1.setId(1L);
+        given(categoryService.getCategoryById(anyLong())).willReturn(Optional.of(categoryRes1));
 
         mockMvc.perform(get("/api/category/{id}", anyLong())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.categoryName", is(categoryRes.getCategoryName())));
+                .andExpect(jsonPath("$.categoryName", is(categoryRes1.getCategoryName())));
 
         verify(categoryService).getCategoryById(anyLong());
     }
@@ -112,71 +119,57 @@ class CategoryControllerTest {
 
     @Test
     void whenSaveCategory_thenReturnJson() {
-        CategoryDtoRequest categoryReq = new CategoryDtoRequest();
-        categoryReq.setCategoryName("Castorama");
-        CategoryDtoResponse categoryRes = new CategoryDtoResponse();
-        categoryRes.setId(1L);
-        categoryRes.setCategoryName("Castorama");
-
-        given(categoryService.saveCategory(categoryReq)).willReturn(categoryRes);
+        categoryRes1.setId(1L);
+        given(categoryService.saveCategory(categoryReq1)).willReturn(categoryRes1);
 
         try {
             mockMvc.perform(post("/api/category")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(mapper.writeValueAsString(categoryReq)))
+                            .content(mapper.writeValueAsString(categoryReq1)))
                     .andDo(print())
                     .andExpect(status().isCreated())
                     .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/category/1"))
-                    .andExpect(jsonPath("$.categoryName", is(categoryReq.getCategoryName())));
+                    .andExpect(jsonPath("$.categoryName", is(categoryReq1.getCategoryName())));
         } catch (Exception e) {
             assertThat(e).isInstanceOf(MethodArgumentNotValidException.class);
         }
 
-        verify(categoryService).saveCategory(categoryReq);
+        verify(categoryService).saveCategory(categoryReq1);
     }
 
     @Test
     void whenReplaceCategory_thenStatusOk() throws Exception {
-        CategoryDtoRequest categoryDtoRequest = new CategoryDtoRequest();
-        categoryDtoRequest.setCategoryName("Castorama");
-        CategoryDtoResponse categoryDtoResponse = new CategoryDtoResponse();
-        categoryDtoResponse.setCategoryName("Castorama");
-
-        given(categoryService.replaceCategory(anyLong(), eq(categoryDtoRequest))).willReturn(Optional.of(categoryDtoResponse));
+        given(categoryService.replaceCategory(anyLong(), eq(categoryReq1))).willReturn(Optional.of(categoryRes1));
 
         mockMvc.perform(put("/api/category/{id}", 100L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDtoRequest)))
+                        .content(mapper.writeValueAsString(categoryReq1)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        verify(categoryService).replaceCategory(anyLong(), eq(categoryDtoRequest));
+        verify(categoryService).replaceCategory(anyLong(), eq(categoryReq1));
     }
 
     @Test
     void whenReplaceCategoryNonExistingId_thenReturnNotFound() throws Exception {
-        CategoryDtoRequest categoryDtoRequest = new CategoryDtoRequest();
-        categoryDtoRequest.setCategoryName("Castorama");
-
-        given(categoryService.replaceCategory(anyLong(), eq(categoryDtoRequest))).willReturn(Optional.empty());
+        given(categoryService.replaceCategory(anyLong(), eq(categoryReq1))).willReturn(Optional.empty());
 
         mockMvc.perform(put("/api/category/{id}", 100L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDtoRequest)))
+                        .content(mapper.writeValueAsString(categoryReq1)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        verify(categoryService).replaceCategory(anyLong(), eq(categoryDtoRequest));
+        verify(categoryService).replaceCategory(anyLong(), eq(categoryReq1));
     }
 
     @Test
     void whenReplaceTooShortCategoryName_thenReturnBadRequest() throws Exception {
-        CategoryDtoRequest categoryDtoRequest = new CategoryDtoRequest();
-        categoryDtoRequest.setCategoryName("Ca");
+        categoryReq1.setCategoryName("Ca");
 
         mockMvc.perform(put("/api/category/{id}", 100L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDtoRequest)))
+                        .content(mapper.writeValueAsString(categoryReq1)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
@@ -186,11 +179,11 @@ class CategoryControllerTest {
 
     @Test
     void whenReplaceCategoryNull_thenReturnBadRequest() throws Exception {
-        CategoryDtoRequest categoryDtoRequest = new CategoryDtoRequest();
+        CategoryDtoRequest categoryReq1 = new CategoryDtoRequest();
 
         mockMvc.perform(put("/api/category/{id}", 100L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDtoRequest)))
+                        .content(mapper.writeValueAsString(categoryReq1)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
