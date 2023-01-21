@@ -1,7 +1,9 @@
 package pl.pawsko.toolroom.tool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.pawsko.toolroom.tool.validators.CategoryCustomConstraint;
 import pl.pawsko.toolroom.tool.validators.LocationCustomConstraint;
 import pl.pawsko.toolroom.tool.validators.ManufacturerCustomConstraint;
@@ -13,6 +15,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 class ToolDtoRequest {
     @Size(min = 3, message = "Tool name must contain minimum {min} signs")
     private String name;
